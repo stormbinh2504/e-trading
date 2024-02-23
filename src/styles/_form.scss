@@ -1,0 +1,106 @@
+@import "common";
+
+.mg-form-control {
+  float     : left;
+  text-align: left;
+  width     : 100%;
+  position  : relative;
+
+  &.input-password {
+    position: relative;
+
+    .icon-show-pass {
+      position: absolute;
+      top     : 25%;
+      right   : 10px;
+      cursor  : pointer;
+    }
+  }
+
+  input {
+    width        : 100%;
+    height       : 100%;
+    padding      : 5px 10px;
+    border-radius: 5px;
+    border       : 1px solid #dfdfe1;
+    font-size    : 16px;
+    height       : 40px;
+
+    &:focus {
+      outline-width: 1px;
+      outline-color: #00deb6;
+    }
+
+    &:hover {
+      outline-width: 1px;
+      outline-color: #00deb6;
+    }
+
+    &[disabled] {
+      opacity: 0.5 !important;
+
+      &:hover {
+        cursor: not-allowed !important;
+      }
+    }
+  }
+
+  >textarea {
+    width        : 100%;
+    padding      : 5px 10px;
+    border-radius: 5px;
+    border       : 1px solid #dfdfe1;
+    font-size    : 16px;
+
+    &:focus {
+      outline-width: 1px;
+      outline-color: #00deb6;
+    }
+
+    &:hover {
+      outline-width: 1px;
+      outline-color: #00deb6;
+    }
+  }
+
+
+  .readonly {
+    background-color: #eaeaef;
+
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+
+  .ext-action {
+    text-align: right;
+    width     : 100%;
+  }
+}
+
+.err-msg-form {
+  color: red;
+}
+
+
+.custom-input-react-select {
+  width : 100%;
+  height: 40px;
+
+  .css-b62m3t-container {
+    height: 100%;
+
+    .css-13cymwt-control {
+      height: 100%;
+    }
+
+    .css-t3ipsp-control {
+      height: 100%;
+    }
+
+    .css-t3ipsp-control {
+      border-color: #00deb6;
+      box-shadow  : 0 0 0 1px #00deb6
+    }
+  }
+}

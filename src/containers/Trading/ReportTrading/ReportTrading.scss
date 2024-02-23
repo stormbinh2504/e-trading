@@ -1,0 +1,37 @@
+.report-trading {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+
+    .report-trading-content {
+        display: flex;
+        gap    : 10px;
+
+        .info-symbol {
+            border       : 1px solid red;
+            border-radius: 10px;
+            padding      : 10px;
+
+            .info-header {}
+
+            .info-body {
+                display       : flex;
+                flex-direction: column;
+                gap           : 10px;
+
+                .wrap-row-item {
+                    padding      : 5px;
+                    border       : 1px solid green;
+                    border-radius: 10px;
+
+                    .row-item {
+                        display: flex;
+                        gap    : 10px;
+                    }
+                }
+            }
+
+            .info-footer {}
+        }
+    }
+}

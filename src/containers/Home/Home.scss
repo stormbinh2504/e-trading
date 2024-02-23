@@ -1,0 +1,183 @@
+.container-home {
+    width : 100%;
+    height: 100%;
+
+    .container-slider {
+        position          : relative;
+        height            : 440px;
+        // background     : url("../../assets/images/home-bg.jpg") center no-repeat;
+        position          : relative;
+        background-size   : cover;
+    }
+
+    .container-top-properties {
+        .top-properties-info {
+            .block-info {
+                margin-top: 32px;
+            }
+
+            .list-items {
+                a {
+                    cursor: pointer;
+                }
+
+                .title {
+                    font-size  : 18px;
+                    font-weight: 700;
+                    line-height: 27px;
+                }
+
+                .property-items {
+                    margin-top: 16px;
+                    z-index   : 20;
+                    display   : flex;
+
+                    .top-news {
+                        width  : 100%;
+                        display: flex;
+
+                        .highlight-news-items {
+                            .top-highlight {
+                                width  : 100%;
+                                display: flex;
+                                height : 184px;
+
+                                .top-highlights {
+                                    width           : 50%;
+                                    background-color: #f0f2f5;
+                                    border-radius   : 0 8px 8px 0;
+
+                                    .top-highlight-title {
+                                        height            : 60px;
+                                        margin            : 16px 16px 0 16px;
+                                        font-style        : normal;
+                                        font-weight       : 600;
+                                        font-size         : 20px;
+                                        line-height       : 150%;
+                                        overflow          : hidden;
+                                        -webkit-line-clamp: 2;
+                                        display           : -webkit-box;
+                                        -webkit-box-orient: vertical;
+                                        color             : #3c4146;
+                                    }
+
+                                    .top-highlight-desc {
+                                        margin            : 8px 16px 0 16px;
+                                        font-style        : normal;
+                                        font-weight       : normal;
+                                        font-size         : 14px;
+                                        line-height       : 150%;
+                                        color             : #3c4146;
+                                        overflow          : hidden;
+                                        -webkit-line-clamp: 4;
+                                        display           : -webkit-box;
+                                        -webkit-box-orient: vertical;
+                                    }
+                                }
+                            }
+
+                            .secondary-highlight {
+                                float     : left;
+                                margin-top: 16px;
+                                width     : 50%;
+                                height    : 70px;
+
+                                a {
+                                    display: flex;
+                                    height : 70px;
+
+                                    img {
+                                        width        : 110px;
+                                        border-radius: 8px;
+                                    }
+
+                                    .secondary-highlight-title {
+                                        height            : 46px;
+                                        margin-left       : 12px;
+                                        font-style        : normal;
+                                        font-weight       : 600;
+                                        font-size         : 15px;
+                                        line-height       : 150%;
+                                        color             : #3c4146;
+                                        overflow          : hidden;
+                                        -webkit-line-clamp: 2;
+                                        display           : -webkit-box;
+                                        -webkit-box-orient: vertical;
+                                    }
+                                }
+                            }
+                        }
+
+                        .recent-news {
+                            .recent-news-title {
+                                padding           : 8px 0 8px 0;
+                                border-bottom     : 1px solid #e6ecf0;
+                                font-weight       : 600;
+                                font-size         : 15px;
+                                line-height       : 150%;
+                                color             : #3c4146;
+                                overflow          : hidden;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                                white-space       : nowrap;
+                                text-overflow     : ellipsis;
+                            }
+
+                            .viewmore-all {
+                                margin-top : 8px;
+                                font-weight: 600;
+                                font-size  : 15px;
+                                line-height: 150%;
+                                color      : #0499a8;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .banner-home-center {
+                .banner-content {
+                    a {
+                        img {
+                            width              : 100%;
+                            height             : 200px;
+                            background-position: 100% 0;
+                            background-repeat  : no-repeat;
+                            position           : relative;
+                            background-size    : cover;
+                        }
+                    }
+                }
+            }
+
+            .features {
+                margin-top: 20px;
+
+                .list-features {
+                    .item-feature {
+                        // display     : relative;
+                        box-shadow   : 0 2px 6px rgba(70, 80, 110, .3);
+                        border-radius: 8px;
+                        padding      : 12px;
+                        float        : left;
+                        width        : 100%;
+
+                        >a {
+                            margin-top        : 4px;
+                            overflow          : hidden;
+                            text-overflow     : ellipsis;
+                            -webkit-line-clamp: 2;
+                            line-height       : 21px;
+                            font-size         : 16px;
+                            font-weight       : 600;
+                            color             : #3c4146;
+                            height            : 42px;
+                            display           : flex;
+                            align-items       : flex-end;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

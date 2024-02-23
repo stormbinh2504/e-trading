@@ -1,0 +1,12 @@
+.lds-gear {
+    width          : 100vw;
+    height         : 100vh;
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+
+    position  : absolute;
+    z-index   : 50;
+    background: transparent;
+    opacity   : 0.7;
+}

@@ -1,0 +1,22 @@
+.item-center {
+    display        : flex !important;
+    align-items    : center !important;
+    justify-content: center !important;
+}
+
+.custom-focus-input {
+    &:focus {
+        outline-width: 1px;
+        outline-color: #00deb6;
+    }
+
+    &:hover {
+        outline-width: 1px;
+        outline-color: #00deb6;
+    }
+
+    &:focus-visible {
+        outline-width: 1px;
+        outline-color: #00deb6;
+    }
+}

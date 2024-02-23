@@ -1,0 +1,47 @@
+.Toastify__toast--success {
+  background: green !important;
+}
+
+.Toastify__toast--error {
+  background: red !important;
+}
+
+.Toastify__toast--warn {
+  background: yellow !important;
+}
+
+.Toastify__toast--info {
+  background: blue !important;
+}
+
+
+.Toastify__close-button {
+  outline: unset !important;
+  border : none !important;
+}
+
+.custom-toast {
+  .toast-close {
+    position          : absolute;
+    right             : 10px;
+    top               : 10px;
+    padding           : 0;
+    cursor            : pointer;
+    background        : transparent;
+    border            : 0;
+    -webkit-appearance: none;
+    transition        : opacity 0.2s ease-out;
+    outline           : unset;
+  }
+
+  .toast-title {
+    font-weight: bold;
+    margin     : 0 20px 5px 0;
+    display    : flex;
+    gap        : 10px;
+
+    .fixed-scroll-bar {
+      height: 50px;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+/* .item must be first */
+
+.pagination-component {
+    width: 100%;
+
+    .pagination {
+        .page-item {
+            cursor: pointer;
+
+            a {
+                color  : #000 !important;
+                padding: 10px !important;
+            }
+
+            &.active {
+                a {
+                    color           : #fff !important;
+                    background-color: #262637 !important;
+                    border-color    : #262637 !important;
+                }
+            }
+        }
+    }
+}

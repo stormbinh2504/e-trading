@@ -1,0 +1,99 @@
+@import "common";
+
+body {
+
+  .container-action {
+    justify-content: flex-end;
+    gap            : 10px;
+    display        : flex;
+
+    button {
+      &[disabled] {
+        cursor : not-allowed;
+        opacity: 0.5;
+      }
+    }
+
+    &.style-add {
+      margin-top: 20px;
+    }
+
+    .btn {
+      min-width: 120px;
+    }
+
+    .btn-close {
+      border-radius   : 5px;
+      background-color: #333;
+      color           : #f0f8f8;
+      padding         : 5px 10px;
+      text-decoration : none;
+    }
+
+    .btn-mogi-1 {
+      border          : 1px solid #00737c;
+      border-radius   : 5px;
+      background-color: #f0f8f8;
+      color           : #00737c;
+      padding         : 5px 10px;
+      text-decoration : none;
+    }
+
+    .btn-continue {
+      color     : #333;
+      background: #00deb6;
+      border    : 0;
+      min-width : 100px;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
+
+  .status-table {
+    background   : #849f8a;
+    color        : #ffffff;
+    display      : inline-block;
+    padding      : 2px 8px;
+    margin       : 2px 0;
+    border-radius: 50px;
+
+    &.status-active {
+      background: #0de43b;
+    }
+
+    &.status-not-active {
+      background: #797a79;
+    }
+
+    &.status-error {
+      background: #e43838;
+    }
+  }
+
+  .text-table {
+    background   : #849f8a;
+    color        : #ffffff;
+    display      : inline-block;
+    padding      : 2px 8px;
+    margin       : 2px 0;
+    border-radius: 50px;
+
+    &.detail {
+      background : aqua;
+      color      : #000;
+      font-weight: 500;
+    }
+
+    &.restore {
+      background : #faf900;
+      color      : #000;
+      font-weight: 500;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}

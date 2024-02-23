@@ -1,0 +1,44 @@
+@import "../../styles/common.scss";
+
+.draggable-modal {
+  .modal-content {
+    position           : relative;
+    display            : flex;
+    flex-direction     : column;
+    width              : 100%;
+    pointer-events     : auto;
+    background-color   : transparent;
+    background-clip    : padding-box;
+    // border          : 1px solid rgba(0, 0, 0, 0.2);
+    border-radius      : 5px;
+    outline            : 0;
+
+    .header-dragHandler {
+      border-radius  : 5px 5px 0 0;
+      display        : flex;
+      align-items    : center;
+      justify-content: space-between;
+      background     : $common_header;
+      padding        : 0px 10px;
+      height         : 40px;
+
+      .title-modal {
+        font-weight: 700;
+        font-size  : 16px;
+      }
+
+      .btn-icon-fm {
+        font-size: 16px;
+      }
+    }
+
+    .body-dragHandler {
+      border-radius: 0 0 5px 5px;
+      background   : $common_body;
+      padding      : 10px;
+      max-height   : 70vh;
+      overflow-y   : auto;
+      overflow-x   : hidden;
+    }
+  }
+}

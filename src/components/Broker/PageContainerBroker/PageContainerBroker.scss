@@ -1,0 +1,47 @@
+.container-broker {
+    width : 100%;
+    height: 100%;
+
+    .container-content-broker {
+        margin-top: 70px;
+
+        .page-header-broker {
+            background-color: #00deb6;
+            height          : 200px;
+            text-align      : center;
+
+            .page-title {
+                padding    : 65px 0;
+                margin     : 0;
+                font-size  : 27px;
+                font-weight: 600;
+                color      : #fff;
+            }
+        }
+
+        .page-body-broker {
+            margin-top    : -100px;
+            padding-bottom: 30px;
+
+            .body {
+                width        : 100%;
+                height       : 100%;
+                background   : white;
+                border-radius: 4px;
+
+                .body-container {
+                    margin-top: 50px;
+
+                    .body-content {
+                        padding: 10px;
+
+                        .main-content {
+                            max-width: 800px;
+                            margin   : 0 auto;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

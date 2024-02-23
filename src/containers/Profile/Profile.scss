@@ -1,0 +1,86 @@
+@import "../../styles/common";
+
+.profile {
+    width        : 100%;
+    height       : 100%;
+    background   : white;
+    border-radius: 4px;
+
+    .profile-container {
+        margin-top: 50px;
+
+        .profile-content {
+            padding: 10px;
+
+            .profile-content-row {
+                margin: 10px 0px;
+
+                .label {
+                    text-align     : right;
+                    display        : flex;
+                    justify-content: flex-end;
+                    align-items    : center;
+                    font-weight    : 700;
+
+                    .img-avatar {
+                        >img {
+                            height       : 50px;
+                            width        : 50px;
+                            border-radius: 50%;
+                        }
+                    }
+                }
+
+                .value {
+                    text-align: left;
+                }
+
+                .container-action {
+
+                    .btn-continue {
+                        color     : #333;
+                        background: #00deb6;
+                        border    : 0;
+                        min-width : 100px;
+
+                        &:hover {
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+// từ 575.98px trở xuống
+@include media-breakpoint-down(xs) {
+    .profile {
+        .profile-container {
+            .profile-content {
+                .profile-content-row {
+                    .label {
+                        text-align     : left;
+                        justify-content: flex-start;
+                        padding        : 5px;
+                    }
+
+                    .value {
+                        text-align: left;
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+
+// từ 767px trở xuống
+@include media-breakpoint-down(sm) {}
+
+// từ 991px trở xuống
+@include media-breakpoint-down(md) {}

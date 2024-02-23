@@ -1,0 +1,61 @@
+.setting-container {
+    overflow-x        : hidden;
+    overflow-y        : auto;
+    z-index           : 1000;
+    box-shadow        : 3px 3px 3px 2px #0000;
+    -webkit-box-shadow: 3px 3px 3px 3px #0000;
+    position          : absolute;
+    right             : 119px;
+    top               : 60px;
+    height            : fit-content;
+    background-color  : white;
+
+    .profile-menu {
+        margin: 5px 0px;
+
+        li {
+            padding: 5px 10px;
+            cursor : pointer;
+
+            &:hover {
+                color           : #20a39a !important;
+                background-color: #f5f5f5;
+            }
+
+            i {
+                display     : inline-block;
+                width       : 14px;
+                height      : 14px;
+                margin-right: 10px;
+            }
+
+            a {
+                padding: 8px 10px;
+
+                // &:hover {
+                //     color           : #20a39a !important;
+                //     background-color: #f5f5f5;
+                // }
+
+                .fa-bell {
+                    color       : #ec8926;
+                    margin-right: 5px;
+                    font-size   : 15px;
+                }
+
+                .fa-heart {
+                    color    : #eb3284;
+                    font-size: 15px;
+                }
+            }
+
+            &.divider {
+                height          : 1px;
+                margin          : 0px;
+                overflow        : hidden;
+                background-color: #e5e5e5;
+                padding         : 0px;
+            }
+        }
+    }
+}

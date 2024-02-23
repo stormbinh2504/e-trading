@@ -1,0 +1,55 @@
+@import "common";
+
+body {
+
+  .basic-table {
+    border: none;
+    width : 100%;
+
+    thead {
+      tr {
+        position  : sticky;
+        top       : 0;
+        background: $common_header;
+
+        th {
+          padding     : 18px 0px;
+          border-top  : 1px solid $border_table;
+          border-left : 1px solid $border_table;
+          border-right: 1px solid $border_table;
+        }
+
+        // th:first-child {
+        //   border-left: none;
+        // }
+
+        // th:last-child {
+        //   border-right: none;
+        // }
+
+      }
+    }
+
+    tbody {
+      tr {
+        background: #fff;
+        border    : 1px solid $border_table;
+
+        td {
+          padding      : 10px 5px;
+          border-bottom: 1px solid $border_table;
+          border-left  : 1px solid $border_table;
+          border-right : 1px solid $border_table;
+        }
+      }
+
+      tr:nth-child(odd) td {
+        background: #fff;
+      }
+
+      tr:nth-child(even) td {
+        background: #fff;
+      }
+    }
+  }
+}

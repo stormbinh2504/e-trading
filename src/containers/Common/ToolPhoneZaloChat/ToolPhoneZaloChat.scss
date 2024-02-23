@@ -1,0 +1,164 @@
+@import "../../../styles/common";
+
+.tool-phone-zalo-chat {
+    position: fixed;
+    top     : 30%;
+    right   : 0px;
+    z-index : 9999;
+
+
+    .phonering-alo-phone,
+    .zaloring-alo-phone,
+    .mess-facebook,
+    .youtube-recomend {
+        position: relative;
+        width   : 65px;
+        height  : 65px;
+
+        .phonering-alo-ph-circle-fill {
+            width                   : 60px;
+            height                  : 60px;
+            position                : absolute;
+            background-color        : #000;
+            border-radius           : 100% !important;
+            border                  : 2px solid transparent;
+            -webkit-animation       : phonering-alo-circle-fill-anim 2.3s infinite ease-in-out;
+            animation               : phonering-alo-circle-fill-anim 2.3s infinite ease-in-out;
+            transition              : all .5s;
+            -webkit-transform-origin: 50% 50%;
+            -ms-transform-origin    : 50% 50%;
+            transform-origin        : 50% 50%;
+
+        }
+
+        .alo-ph-img-circle {
+            width                   : 40px;
+            height                  : 40px;
+            top                     : 10px;
+            left                    : 10px;
+            position                : absolute;
+            border-radius           : 100% !important;
+            border                  : 2px solid transparent;
+            -webkit-animation       : phonering-alo-circle-img-anim 1s infinite ease-in-out;
+            animation               : phonering-alo-circle-img-anim 1s infinite ease-in-out;
+            -webkit-transform-origin: 50% 50%;
+            -ms-transform-origin    : 50% 50%;
+            transform-origin        : 50% 50%;
+        }
+
+        .img-phonering {
+            background      : url("../../../assets/images/phone_zalo_chat/icon-phone.png") no-repeat center center;
+            background-color: $red_color;
+        }
+
+        .img-zaloring {
+            background      : url("../../../assets/images/phone_zalo_chat/zalo.png") no-repeat center center;
+            background-color: $red_color;
+        }
+    }
+
+    .mess-facebook {
+        .fb-btn {
+            display              : block;
+            margin               : 0px auto;
+            position             : relative;
+            background           : url("../../../assets/images/phone_zalo_chat/facebook-chat.png")center no-repeat #4285f4;
+            width                : 50px;
+            height               : 50px;
+            text-align           : center;
+            border               : 0;
+            outline              : 0;
+            border-radius        : 60px;
+            -webkit-border-radius: 60px;
+            -moz-border-radius   : 60px;
+            -ms-border-radius    : 60px;
+            -o-border-radius     : 60px;
+            /* box-shadow        : 0 1px 6px rgb(0 0 0 / 6%), 0 2px 32px rgb(0 0 0 / 16%); */
+            -webkit-transition   : box-shadow .2s ease;
+            background-size      : 80%;
+            transition           : all .2s ease-in-out;
+        }
+    }
+
+    .youtube-recomend {
+        .youtube-btn {
+            display              : block;
+            margin               : 0px auto;
+            position             : relative;
+            background           : url("../../../assets/images/phone_zalo_chat/icon_youtube.png")center no-repeat $red_color;
+            width                : 50px;
+            height               : 50px;
+            text-align           : center;
+            border               : 0;
+            outline              : 0;
+            border-radius        : 60px;
+            -webkit-border-radius: 60px;
+            -moz-border-radius   : 60px;
+            -ms-border-radius    : 60px;
+            -o-border-radius     : 60px;
+            /* box-shadow        : 0 1px 6px rgb(0 0 0 / 6%), 0 2px 32px rgb(0 0 0 / 16%); */
+            -webkit-transition   : box-shadow .2s ease;
+            background-size      : 80%;
+            transition           : all .2s ease-in-out;
+        }
+    }
+}
+
+
+@keyframes phonering-alo-circle-img-anim {
+    0% {
+        -webkit-transform: rotate(0) scale(1) skew(1deg);
+        transform        : rotate(0) scale(1) skew(1deg);
+    }
+
+    10% {
+        -webkit-transform: rotate(-25deg) scale(1) skew(1deg);
+        transform        : rotate(-25deg) scale(1) skew(1deg);
+    }
+
+    20% {
+        -webkit-transform: rotate(25deg) scale(1) skew(1deg);
+        transform        : rotate(25deg) scale(1) skew(1deg);
+    }
+
+    30% {
+        -webkit-transform: rotate(-25deg) scale(1) skew(1deg);
+        transform        : rotate(-25deg) scale(1) skew(1deg);
+    }
+
+    40% {
+        -webkit-transform: rotate(25deg) scale(1) skew(1deg);
+        transform        : rotate(25deg) scale(1) skew(1deg);
+    }
+
+    50% {
+        -webkit-transform: rotate(0) scale(1) skew(1deg);
+        transform        : rotate(0) scale(1) skew(1deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(0) scale(1) skew(1deg);
+        transform        : rotate(0) scale(1) skew(1deg);
+    }
+}
+
+
+@keyframes phonering-alo-circle-fill-anim {
+    0% {
+        -webkit-transform: rotate(0) scale(.7) skew(1deg);
+        transform        : rotate(0) scale(.7) skew(1deg);
+        opacity          : .2;
+    }
+
+    50% {
+        -webkit-transform: rotate(0) scale(1) skew(1deg);
+        transform        : rotate(0) scale(1) skew(1deg);
+        opacity          : .2;
+    }
+
+    100% {
+        -webkit-transform: rotate(0) scale(.7) skew(1deg);
+        transform        : rotate(0) scale(.7) skew(1deg);
+        opacity          : .2;
+    }
+}

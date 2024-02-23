@@ -1,0 +1,41 @@
+@import "common";
+
+.App {}
+
+.text-green {
+  color: rgb(17, 182, 102) !important;
+}
+
+.text-blue {
+  color: rgb(4, 153, 168) !important;
+}
+
+.text-orange {
+  color: rgb(235, 130, 25) !important;
+}
+
+.btn-icon-fm {
+  text-align     : center;
+  width          : 24px;
+  height         : 24px;
+  cursor         : pointer;
+  display        : flex;
+  align-self     : center;
+  justify-content: center;
+  background     : #EEEEEE;
+  align-items    : center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+
+  >i {
+    font-size: 20px;
+  }
+}
+
+
+.note {
+  color    : red;
+  font-size: 500;
+}
