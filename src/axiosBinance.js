@@ -37,7 +37,6 @@ instance.interceptors.response.use(
         if (response == null) {
             return Promise.reject(error);
         }
-        console.log("binh_response", response, isTokenExpiredError(response))
         return Promise.reject(createError(response.status));
     }
 );

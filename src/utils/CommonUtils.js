@@ -71,6 +71,27 @@ class CommonUtils {
         }
         return ""
     };
+
+
+    static getClassCheckValue = (value, isColor = false) => {
+        let _value = Number(value)
+        let _class = ""
+        if (!value && isColor) {
+            _class = "text-yellow"
+        } else {
+            if (_value > 0) {
+                _class = "text-green"
+            } else if (_value < 0) {
+                _class = "text-red"
+            } else if (_value == 0) {
+                _class = "text-yellow"
+            } else {
+                _class = ""
+            }
+        }
+
+        return _class
+    }
 }
 
 export default CommonUtils;

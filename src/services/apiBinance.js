@@ -1,7 +1,8 @@
 import axiosBinance from '../axiosBinance';
 import * as queryString from 'query-string';
 
-let BINANCE_API = "https://fapi.binance.com"
+let BINANCE_FAPI = "https://fapi.binance.com"
+let BINANCE_API = "https://api.binance.com"
 
 const apiBinance = {
 
@@ -13,7 +14,13 @@ const apiBinance = {
             symbol, interval, startTime, endTime
         };
 
-        return axiosBinance.get(`${BINANCE_API}/fapi/v1/klines?` + queryString.stringify(queryParams))
+        return axiosBinance.get(`${BINANCE_FAPI}/fapi/v1/klines?` + queryString.stringify(queryParams))
+    },
+
+    //Gọi all danh sách mã chứng khoán
+    getExchangeInfo(body) {
+        // return axiosBinance.get(`${BINANCE_API}/api/v3/exchangeInfo`)
+        return axiosBinance.get(`${BINANCE_FAPI}/fapi/v1/exchangeInfo`)
     },
 }
 
