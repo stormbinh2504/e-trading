@@ -60,7 +60,7 @@ class ToastUtil {
         if (error && error.errorMessage) {
             messageId = error.errorMessage
         }
-
+        messageId = error.httpStatusCode;
         toast.error(<CustomToast type="ERROR" titleId={title} message={message} messageId={messageId} time={new Date()} />, {
             position: toast.POSITION.BOTTOM_RIGHT,
             pauseOnHover: true,

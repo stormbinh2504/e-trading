@@ -109,9 +109,9 @@ const ReportTrading = () => {
                             }
                             return item
                         })
-                        setLoading(false);
                         if ((indexSymbol + 1) === _listSymbol.length) {
                             setListDataSymbol(_listDataSymbol)
+                            setLoading(false);
                             ToastUtil.success("Tải thông tin mã chứng khoán thành công");
                             return
                         }
