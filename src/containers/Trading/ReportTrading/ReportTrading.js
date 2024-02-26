@@ -112,6 +112,7 @@ const ReportTrading = () => {
                         setLoading(false);
                         if ((indexSymbol + 1) === _listSymbol.length) {
                             setListDataSymbol(_listDataSymbol)
+                            ToastUtil.success("Tải thông tin mã chứng khoán thành công");
                             return
                         }
                         // ToastUtil.success("Đăng nhập thành công");
@@ -120,7 +121,7 @@ const ReportTrading = () => {
                 })
                 .catch(error => {
                     setLoading(false);
-                    ToastUtil.errorApi(error, "Đăng nhập không thành công");
+                    ToastUtil.errorApi(error, "Tải thông tin mã chứng khoán không thành công");
                 });
         })
 
