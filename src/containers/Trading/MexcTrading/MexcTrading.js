@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { imageUpload } from '../../../utils/imageUpload'
-import { sdkVNPTService, authService, apiBinance } from '../../../services';
+import { sdkVNPTService, authService, apiBinance, apiMexc } from '../../../services';
 import { compressImage } from "../../../utils/imageUpload"
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from 'react-router-dom'
@@ -10,7 +10,7 @@ import { CommonUtils, ToastUtil } from '../../../utils'
 import { postDataAPI } from '../../../utils/fetchData'
 import _ from 'lodash';
 import moment from 'moment'
-import "./ReportTrading.scss"
+import "./MexcTrading.scss"
 import { Space, Table, Tag } from 'antd';
 import axios from 'axios';
 // const listSymbol = ["ZENUSDT", "SUIUSDT"]
@@ -21,7 +21,7 @@ const interval = '1d'; // Daily interval
 const startTime = Date.now() - (14 * 24 * 60 * 60 * 1000); // Start time (14 days ago)
 const endTime = Date.now(); // End time (current time)
 
-const ReportTrading = () => {
+const MexcTrading = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const { auth } = useSelector((state) => state);
@@ -42,15 +42,19 @@ const ReportTrading = () => {
 
     const fetchExchangeInfo = async () => {
         dispatch(alertType(true))
-        await apiBinance.getExchangeInfo()
+        await apiMexc.getMexcExchangeInfo()
             .then(data => {
-                if (data && data.symbols) {
-                    let dataSymbol = _.map(data.symbols, (item, index) => {
+                if (data && data) {
+                    // data = data.slice(0, 10)
+                    data = _.filter(data, (item, index) => {
+                        return item && item.symbol && item.symbol.includes("USDT")
+                    })
+
+                    let dataSymbol = _.map(data, (item, index) => {
                         return item.symbol
                     })
-                    console.log("ReportTrading_fetchExchangeInfo", dataSymbol)
                     setListSymbol(dataSymbol)
-                    setListDataSymbol(data.symbols)
+                    setListDataSymbol(data)
                     dispatch(alertType(false))
                     ToastUtil.success("Tải danh sách mã chứng khoán thành công");
                 }
@@ -72,7 +76,7 @@ const ReportTrading = () => {
         // _listSymbol = _listSymbol.slice(0, 3);
         _.forEach(_listSymbol, async (symbol, indexSymbol) => {
             body.symbol = symbol
-            await apiBinance.getInfoSymbol(body)
+            await apiMexc.getMexcInfoSymbol(body)
                 .then(async data => {
                     if (data && data.length > 0) {
                         let data7DaysPre = data.slice(0, 7);
@@ -92,7 +96,6 @@ const ReportTrading = () => {
                         const totalVolume3DaysNext = data3DaysNext.reduce((sum, item) => sum + Number(item['5']), 0);
                         const averageVolume3DaysNext = totalVolume3DaysNext / 3;
                         const percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
-
 
 
                         _listDataSymbol = _.map(_listDataSymbol, (item, index) => {
@@ -136,11 +139,11 @@ const ReportTrading = () => {
         return moment(timestamp).format('HH:mm:ss - DD/MM/YYYY') || "";
     }
 
-    console.log("ReportTrading_render", listDataSymbol)
+    console.log("Mexc_render", listDataSymbol)
     return (
-        <div div className='report-trading' >
-            <div className="report-trading-container">
-                <div className="report-trading-content">
+        <div div className='mexc-trading' >
+            <div className="mexc-trading-container">
+                <div className="mexc-trading-content">
                     <div className="container-action style-add">
                         <button className="btn btn-add" onClick={fetchInfoSymbol}>Call Data </button>
                     </div>
@@ -225,4 +228,4 @@ const ReportTrading = () => {
     )
 }
 
-export default ReportTrading
+export default MexcTrading

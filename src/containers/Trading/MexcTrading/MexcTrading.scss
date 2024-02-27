@@ -1,0 +1,51 @@
+@import "../../../styles/common";
+
+.mexc-trading {
+    width        : 100%;
+    height       : 100%;
+    background   : white;
+    border-radius: 4px;
+
+    .mexc-trading-container {
+        margin-top: 50px;
+
+        .mexc-trading-content {
+            padding: 10px;
+
+            .container-action {
+                display        : flex;
+                justify-content: flex-start;
+
+                .btn-add {
+                    color     : #333;
+                    background: #00deb6;
+                    border    : 0;
+                    min-width : 100px;
+
+                    &:hover {
+                        color: white;
+                    }
+                }
+            }
+
+            .table-all-broker {
+                .ant-table-wrapper {
+                    .ant-table-cell {
+                        .img-broker {
+                            border-radius: 5px;
+                            padding      : 10px;
+                            width        : 150px;
+                            height       : 150px;
+
+
+                            background-position: 100% 0;
+                            background-repeat  : no-repeat;
+                            position           : relative;
+                            background-size    : cover;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

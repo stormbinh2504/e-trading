@@ -12,7 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { injectStyle } from "react-toastify/dist/inject-style";
 import Header from './containers/Header/Header';
 import Home from './containers/Home/Home';
-import { TYPE_USER } from './utils';
+import { PATH_NAME, TYPE_USER } from './utils';
 import HeaderBroker from './containers/Header/HeaderBroker';
 import { history } from './redux/store'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
@@ -22,7 +22,8 @@ import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import { fetchUserInfoFromSavedSession, initializeApp } from './redux/actions';
 import Footer from './containers/Footer/Footer';
 import _ from 'lodash';
-import ReportTrading from './containers/Trading/ReportTrading/ReportTrading';
+import BinanceTrading from './containers/Trading/BinanceTrading/BinanceTrading';
+import MexcTrading from './containers/Trading/MexcTrading/MexcTrading';
 
 
 if (typeof window !== "undefined") {
@@ -74,18 +75,19 @@ function App() {
 
             <ScrollToTop />
             <Alert />
-            {/* {
+            {
               app.typeUser === TYPE_USER.CUSTOMER && < Header />
             }
-            {
+            {/* {
               app.typeUser === TYPE_USER.BROKER && < HeaderBroker />
-            } */}
+            }  */}
             <Switch>
               <div className="main">
                 {app.typeUser === TYPE_USER.CUSTOMER &&
                   < div id="container-page-content" className="container-page-content ">
                     <Route exact path="/home" component={Home} />
-                    <Route exact path="/thongke" component={ReportTrading} />
+                    <Route exact path={PATH_NAME.BINANCE} component={BinanceTrading} />
+                    <Route exact path={PATH_NAME.MEXC} component={MexcTrading} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/register" component={Register} />
                     <Route exact path="/firebase" component={FirebaseTestImage} />

@@ -2,6 +2,9 @@ export const PATH_NAME = {
     HOME: "/home", //
     LOGIN: "/login",
 
+    BINANCE: "/binance",
+    MEXC: "/mexc",
+
     COLLECTIONS: "/collections/gia-ke-vina", // Người bán
     BLOGS: "/blogs/du-an-hoan-thanh", // Người bán
     ABOUT_OUR: "/pages/ve-chung-toi", // Người bán
