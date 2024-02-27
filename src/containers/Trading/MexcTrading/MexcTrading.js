@@ -85,15 +85,15 @@ const MexcTrading = () => {
                         let data3DaysPre = data.slice(8, 11);
                         let data3DaysNext = data.slice(11, 14);
 
-                        const totalVolume7DaysPre = data7DaysPre.reduce((sum, item) => sum + Number(item['5']), 0);
+                        const totalVolume7DaysPre = data7DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume7DaysPre = totalVolume7DaysPre / 7;
-                        const totalVolume7DaysNext = data7DaysNext.reduce((sum, item) => sum + Number(item['5']), 0);
+                        const totalVolume7DaysNext = data7DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume7DaysNext = totalVolume7DaysNext / 7;
                         const percentAverageVolume7Days = (Number(averageVolume7DaysNext) - Number(averageVolume7DaysPre)) * 100 / Number(averageVolume7DaysPre)
 
-                        const totalVolume3DaysPre = data3DaysPre.reduce((sum, item) => sum + Number(item['5']), 0);
+                        const totalVolume3DaysPre = data3DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysPre = totalVolume3DaysPre / 3;
-                        const totalVolume3DaysNext = data3DaysNext.reduce((sum, item) => sum + Number(item['5']), 0);
+                        const totalVolume3DaysNext = data3DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysNext = totalVolume3DaysNext / 3;
                         const percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
 
