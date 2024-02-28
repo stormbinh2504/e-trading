@@ -18,7 +18,7 @@ const { Column, ColumnGroup } = Table;
 
 
 const interval = '1d'; // Daily interval
-const startTime = Date.now() - (6 * 24 * 60 * 60 * 1000); // Start time (6 days ago)
+const startTime = Date.now() - (14 * 24 * 60 * 60 * 1000); // Start time (14 days ago)
 const endTime = Date.now(); // End time (current time)
 
 const columns = [
@@ -70,18 +70,44 @@ const columns = [
                 sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
                 render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
             },
+        ],
+    },
+    {
+        title: '7 Ngày',
+        className: 'bg-day-7',
+        children: [
             {
-                title: 'Tiền 24h TB 1 ngày trước',
-                dataIndex: 'money24hLastDay',
-                key: 'money24hLastDay',
+                title: 'KLTB 7 ngày trước',
+                dataIndex: 'averageVolume7DaysPre',
+                key: 'averageVolume7DaysPre',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-7',
+                sorter: (a, b) => a.averageVolume7DaysPre - b.averageVolume7DaysPre,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: 'KLTB 7 ngày tiếp theo',
+                dataIndex: 'averageVolume7DaysNext',
+                key: 'averageVolume7DaysNext',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-7',
+                sorter: (a, b) => a.averageVolume7DaysNext - b.averageVolume7DaysNext,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: '% KLTB 7 ngày',
+                dataIndex: 'percentAverageVolume7Days',
+                key: 'percentAverageVolume7Days',
                 width: 100,
                 align: 'center',
-                className: 'bg-day-3',
-                sorter: (a, b) => a.money24hLastDay - b.money24hLastDay,
-                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}</span>
+                className: 'bg-day-7',
+                sorter: (a, b) => a.percentAverageVolume7Days - b.percentAverageVolume7Days,
+                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
             },
         ],
-    }
+    },
 ]
 const MexcTrading = () => {
     const history = useHistory()
@@ -116,10 +142,12 @@ const MexcTrading = () => {
                     data = _.map(data, (item, index) => {
                         return {
                             ...item,
+                            averageVolume7DaysPre: 0,
+                            averageVolume7DaysNext: 0,
+                            percentAverageVolume7Days: 0,
                             averageVolume3DaysPre: 0,
                             averageVolume3DaysNext: 0,
                             percentAverageVolume3Days: 0,
-                            money24hLastDay: 0,
                         }
                     })
 
@@ -165,15 +193,18 @@ const MexcTrading = () => {
             await apiMexc.getMexcInfoSymbol(body)
                 .then(async data => {
                     if (data) {
-                        let money24hLastDay = 0
-                        if (data.length > 5) {
-                            let itemLastDay = data[4]
-                            let averageHighLowLastDay = ((Number(itemLastDay[2]) + Number(itemLastDay[3])) / 2) || 0
-                            money24hLastDay = (averageHighLowLastDay * Number(itemLastDay[5])) || 0
-                        }
+                        let data7DaysPre = data.slice(0, 7);
+                        let data7DaysNext = data.slice(7, 14);
 
-                        let data3DaysPre = data.slice(0, 3);
-                        let data3DaysNext = data.slice(3, 6);
+                        let data3DaysPre = data.slice(8, 11);
+                        let data3DaysNext = data.slice(11, 14);
+
+                        const totalVolume7DaysPre = data7DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
+                        const averageVolume7DaysPre = totalVolume7DaysPre / 7;
+                        const totalVolume7DaysNext = data7DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
+                        const averageVolume7DaysNext = totalVolume7DaysNext / 7;
+                        let percentAverageVolume7Days = 0
+                        if (averageVolume7DaysPre && averageVolume7DaysPre != 0) percentAverageVolume7Days = (Number(averageVolume7DaysNext) - Number(averageVolume7DaysPre)) * 100 / Number(averageVolume7DaysPre)
 
                         const totalVolume3DaysPre = data3DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysPre = totalVolume3DaysPre / 3;
@@ -187,10 +218,12 @@ const MexcTrading = () => {
                             if (item.symbol == symbol) {
                                 return {
                                     ...item,
+                                    averageVolume7DaysPre: averageVolume7DaysPre || 0,
+                                    averageVolume7DaysNext: averageVolume7DaysNext || 0,
+                                    percentAverageVolume7Days: percentAverageVolume7Days || 0,
                                     averageVolume3DaysPre: averageVolume3DaysPre || 0,
                                     averageVolume3DaysNext: averageVolume3DaysNext || 0,
-                                    percentAverageVolume3Days: percentAverageVolume3Days || 0,
-                                    money24hLastDay: money24hLastDay || 0,
+                                    percentAverageVolume3Days: percentAverageVolume3Days || 0
                                 }
                             }
                             return item
@@ -253,6 +286,67 @@ const MexcTrading = () => {
                             // scroll={{ x: 1000 }}
                             sticky={true}
                         >
+                            {/* <Column
+                                title="STT" dataIndex="index" key="index" width={50} align='center'
+                                render={(text, record, index) => index + 1}
+                            />
+                            <Column title="Mã" dataIndex="symbol" key="symbol" width={100} align='center' />
+                            <Column
+                                title="KLTB 3 ngày trước"
+                                dataIndex="averageVolume3DaysPre"
+                                key="averageVolume3DaysPre"
+                                width={250} align='center'
+                                sorter={(a, b) => a.averageVolume3DaysPre - b.averageVolume3DaysPre}
+                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
+
+                            />
+                            <Column
+                                title="KLTB 3 ngày tiếp theo"
+                                dataIndex="averageVolume3DaysNext"
+                                key="averageVolume3DaysNext"
+                                width={250} align='center'
+                                sorter={(a, b) => a.averageVolume3DaysNext - b.averageVolume3DaysNext}
+                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
+                            />
+                            <Column
+                                title="% KLTB 3 ngày"
+                                dataIndex="percentAverageVolume3Days"
+                                key="percentAverageVolume3Days"
+                                width={250} align='center'
+                                sorter={(a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days}
+                                render={
+                                    (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
+                                }
+                            />
+
+
+                            <Column
+                                title="KLTB 7 ngày trước"
+                                dataIndex="averageVolume7DaysPre"
+                                key="averageVolume7DaysPre"
+                                width={250} align='center'
+                                sorter={(a, b) => a.averageVolume7DaysPre - b.averageVolume7DaysPre}
+                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
+
+                            />
+                            <Column
+                                title="KLTB 7 ngày tiếp theo"
+                                dataIndex="averageVolume7DaysNext"
+                                key="averageVolume7DaysNext"
+                                width={250} align='center'
+                                sorter={(a, b) => a.averageVolume7DaysNext - b.averageVolume7DaysNext}
+                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
+                            />
+                            <Column
+                                title="% KLTB 7 ngày"
+                                dataIndex="percentAverageVolume7Days"
+                                key="percentAverageVolume7Days"
+                                width={250} align='center'
+                                sorter={(a, b) => a.percentAverageVolume7Days - b.percentAverageVolume7Days}
+                                render={
+                                    (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
+                                }
+                            /> */}
                         </Table>
                     </div>
                 </div>
