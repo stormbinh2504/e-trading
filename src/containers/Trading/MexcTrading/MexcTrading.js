@@ -21,6 +21,94 @@ const interval = '1d'; // Daily interval
 const startTime = Date.now() - (14 * 24 * 60 * 60 * 1000); // Start time (14 days ago)
 const endTime = Date.now(); // End time (current time)
 
+const columns = [
+    {
+        title: 'STT',
+        dataIndex: 'index',
+        key: 'index',
+        width: 50,
+        align: 'center',
+        render: (text, record, index) => (index + 1)
+    },
+    {
+        title: 'Mã',
+        dataIndex: 'symbol',
+        key: 'symbol',
+        width: 150,
+        align: 'center',
+    },
+    {
+        title: '3 Ngày',
+        children: [
+            {
+                title: 'KLTB 3 ngày trước',
+                dataIndex: 'averageVolume3DaysPre',
+                key: 'averageVolume3DaysPre',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-3',
+                sorter: (a, b) => a.averageVolume3DaysPre - b.averageVolume3DaysPre,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: 'KLTB 3 ngày tiếp theo',
+                dataIndex: 'averageVolume3DaysNext',
+                key: 'averageVolume3DaysNext',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-3',
+                sorter: (a, b) => a.averageVolume3DaysNext - b.averageVolume3DaysNext,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: '% KLTB 3 ngày',
+                dataIndex: 'percentAverageVolume3Days',
+                key: 'percentAverageVolume3Days',
+                width: 100,
+                align: 'center',
+                className: 'bg-day-3',
+                sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
+                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
+            },
+        ],
+    },
+    {
+        title: '7 Ngày',
+        className: 'bg-day-7',
+        children: [
+            {
+                title: 'KLTB 7 ngày trước',
+                dataIndex: 'averageVolume7DaysPre',
+                key: 'averageVolume7DaysPre',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-7',
+                sorter: (a, b) => a.averageVolume7DaysPre - b.averageVolume7DaysPre,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: 'KLTB 7 ngày tiếp theo',
+                dataIndex: 'averageVolume7DaysNext',
+                key: 'averageVolume7DaysNext',
+                width: 160,
+                align: 'center',
+                className: 'bg-day-7',
+                sorter: (a, b) => a.averageVolume7DaysNext - b.averageVolume7DaysNext,
+                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+            },
+            {
+                title: '% KLTB 7 ngày',
+                dataIndex: 'percentAverageVolume7Days',
+                key: 'percentAverageVolume7Days',
+                width: 100,
+                align: 'center',
+                className: 'bg-day-7',
+                sorter: (a, b) => a.percentAverageVolume7Days - b.percentAverageVolume7Days,
+                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
+            },
+        ],
+    },
+]
 const MexcTrading = () => {
     const history = useHistory()
     const dispatch = useDispatch()
@@ -49,6 +137,18 @@ const MexcTrading = () => {
                     // data = data.slice(0, 3)
                     data = _.filter(data, (item, index) => {
                         return item && item.symbol && item.symbol.includes("USDT")
+                    })
+
+                    data = _.map(data, (item, index) => {
+                        return {
+                            ...item,
+                            averageVolume7DaysPre: 0,
+                            averageVolume7DaysNext: 0,
+                            percentAverageVolume7Days: 0,
+                            averageVolume3DaysPre: 0,
+                            averageVolume3DaysNext: 0,
+                            percentAverageVolume3Days: 0,
+                        }
                     })
 
                     let dataSymbol = _.map(data, (item, index) => {
@@ -92,7 +192,7 @@ const MexcTrading = () => {
             body.symbol = symbol
             await apiMexc.getMexcInfoSymbol(body)
                 .then(async data => {
-                    if (data && data.length > 0) {
+                    if (data) {
                         let data7DaysPre = data.slice(0, 7);
                         let data7DaysNext = data.slice(7, 14);
 
@@ -116,12 +216,12 @@ const MexcTrading = () => {
                             if (item.symbol == symbol) {
                                 return {
                                     ...item,
-                                    averageVolume7DaysPre,
-                                    averageVolume7DaysNext,
-                                    percentAverageVolume7Days: percentAverageVolume7Days,
-                                    averageVolume3DaysPre,
-                                    averageVolume3DaysNext,
-                                    percentAverageVolume3Days: percentAverageVolume3Days,
+                                    averageVolume7DaysPre: averageVolume7DaysPre || 0,
+                                    averageVolume7DaysNext: averageVolume7DaysNext || 0,
+                                    percentAverageVolume7Days: percentAverageVolume7Days || 0,
+                                    averageVolume3DaysPre: averageVolume3DaysPre || 0,
+                                    averageVolume3DaysNext: averageVolume3DaysNext || 0,
+                                    percentAverageVolume3Days: percentAverageVolume3Days || 0
                                 }
                             }
                             return item
@@ -168,9 +268,9 @@ const MexcTrading = () => {
                     <div className="table-all-broker">
                         <Table
                             loading={loading}
-                            // columns={columns}
+                            columns={columns}
                             dataSource={listDataSymbol}
-                            virtual
+                            // virtual
                             scroll={{ x: 1000, y: 500 }}
                             pagination={{
                                 pageSize: 500,
@@ -182,7 +282,7 @@ const MexcTrading = () => {
                             // scroll={{ x: 1000 }}
                             sticky={true}
                         >
-                            <Column
+                            {/* <Column
                                 title="STT" dataIndex="index" key="index" width={50} align='center'
                                 render={(text, record, index) => index + 1}
                             />
@@ -242,7 +342,7 @@ const MexcTrading = () => {
                                 render={
                                     (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
                                 }
-                            />
+                            /> */}
                         </Table>
                     </div>
                 </div>
