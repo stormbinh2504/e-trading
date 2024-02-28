@@ -203,13 +203,15 @@ const MexcTrading = () => {
                         const averageVolume7DaysPre = totalVolume7DaysPre / 7;
                         const totalVolume7DaysNext = data7DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume7DaysNext = totalVolume7DaysNext / 7;
-                        const percentAverageVolume7Days = (Number(averageVolume7DaysNext) - Number(averageVolume7DaysPre)) * 100 / Number(averageVolume7DaysPre)
+                        let percentAverageVolume7Days = 0
+                        if (averageVolume7DaysPre && averageVolume7DaysPre != 0) percentAverageVolume7Days = (Number(averageVolume7DaysNext) - Number(averageVolume7DaysPre)) * 100 / Number(averageVolume7DaysPre)
 
                         const totalVolume3DaysPre = data3DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysPre = totalVolume3DaysPre / 3;
                         const totalVolume3DaysNext = data3DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysNext = totalVolume3DaysNext / 3;
-                        const percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
+                        let percentAverageVolume3Days = 0
+                        if (averageVolume3DaysPre && averageVolume3DaysPre != 0) percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
 
 
                         _listDataSymbol = _.map(_listDataSymbol, (item, index) => {
@@ -229,6 +231,7 @@ const MexcTrading = () => {
                         if ((indexSymbol + 1) === _listSymbol.length) {
                             setLoading(false);
                             setListDataSymbol(_listDataSymbol)
+                            setPage(page + 1)
                             ToastUtil.success("Tải thông tin mã chứng khoán thành công");
                             return
                         }
@@ -254,7 +257,9 @@ const MexcTrading = () => {
     }
 
     useEffect(() => {
-        fetchInfoSymbol()
+        if (page != 1 && page < 6) {
+            fetchInfoSymbol(page)
+        }
     }, [page]);
 
     console.log("Mexc_render", page, listDataSymbol)
@@ -272,13 +277,7 @@ const MexcTrading = () => {
                             dataSource={listDataSymbol}
                             // virtual
                             scroll={{ x: 1000, y: 500 }}
-                            pagination={{
-                                pageSize: 500,
-                                total: listDataSymbol.length,
-                                onChange: (page) => {
-                                    setPage(page)
-                                },
-                            }}
+                            pagination={false}
                             // scroll={{ x: 1000 }}
                             sticky={true}
                         >
