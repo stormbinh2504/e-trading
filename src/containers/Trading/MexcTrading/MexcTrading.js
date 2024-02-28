@@ -258,7 +258,7 @@ const MexcTrading = () => {
 
     useEffect(() => {
         if (page != 1 && page < 6) {
-            fetchInfoSymbol(page)
+            fetchInfoSymbol()
         }
     }, [page]);
 
@@ -268,7 +268,12 @@ const MexcTrading = () => {
             <div className="mexc-trading-container">
                 <div className="mexc-trading-content">
                     <div className="container-action style-add">
-                        <button className="btn btn-add" onClick={() => fetchInfoSymbol()}>Call Data </button>
+                        <button className="btn btn-add" onClick={
+                            () => {
+                                setPage(1)
+                                fetchInfoSymbol()
+                            }
+                        }>Call Data </button>
                     </div>
                     <div className="table-all-broker">
                         <Table
