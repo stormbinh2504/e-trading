@@ -68,17 +68,43 @@ const columns = [
                 align: 'center',
                 className: 'bg-day-3',
                 sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
-                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
+                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>,
+                onFilter: (value, record) => record.percentAverageVolume3Days > value,
+                filters: [
+                    {
+                        text: '>100%',
+                        value: 100,
+                    },
+                    {
+                        text: '>500%',
+                        value: 500,
+                    },
+                ],
             },
             {
-                title: 'Tiền 24h TB 1 ngày trước',
+                title: 'Tiền 24h 1 ngày trước',
                 dataIndex: 'money24hLastDay',
                 key: 'money24hLastDay',
                 width: 100,
                 align: 'center',
                 className: 'bg-day-3',
                 sorter: (a, b) => a.money24hLastDay - b.money24hLastDay,
-                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}</span>
+                render: (text) => <span className={""} style={{ fontWeight: "500" }}>{CommonUtils.formatNumber(text)}</span>,
+                onFilter: (value, record) => record.money24hLastDay > value,
+                filters: [
+                    {
+                        text: '>300,000',
+                        value: 300000,
+                    },
+                    {
+                        text: '>1,000,000',
+                        value: 1000000,
+                    },
+                    {
+                        text: '>3,000,000',
+                        value: 3000000,
+                    },
+                ],
             },
         ],
     }
@@ -159,6 +185,7 @@ const MexcTrading = () => {
             }
             setLoading(true);
         }
+        // _listSymbol = ["HEXUSDT"]
         // _listSymbol = _listSymbol.slice(0, 3);
         _.forEach(_listSymbol, async (symbol, indexSymbol) => {
             body.symbol = symbol
