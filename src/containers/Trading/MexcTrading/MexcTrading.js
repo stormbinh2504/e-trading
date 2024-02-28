@@ -32,6 +32,7 @@ const MexcTrading = () => {
     const [calValue, setCalValue] = useState({})
     const [dataGroupSymbol, setDataGroupSymbol] = useState({})
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
     useEffect(async () => {
         await fetchExchangeInfo();
     }, []);
@@ -45,7 +46,7 @@ const MexcTrading = () => {
         await apiMexc.getMexcExchangeInfo()
             .then(data => {
                 if (data && data) {
-                    // data = data.slice(0, 10)
+                    // data = data.slice(0, 3)
                     data = _.filter(data, (item, index) => {
                         return item && item.symbol && item.symbol.includes("USDT")
                     })
@@ -70,9 +71,22 @@ const MexcTrading = () => {
 
     const fetchInfoSymbol = async () => {
         let body = { interval, startTime, endTime }
-        setLoading(true);
         let _listSymbol = _.cloneDeep(listSymbol)
         let _listDataSymbol = _.cloneDeep(listDataSymbol)
+        if (_listDataSymbol.length > 0) {
+            if (page === 1) {
+                _listSymbol = _listSymbol.slice(0, 500);
+            } else if (page === 2) {
+                _listSymbol = _listSymbol.slice(500, 1000);
+            } else if (page === 3) {
+                _listSymbol = _listSymbol.slice(1000, 1500);
+            } else if (page === 4) {
+                _listSymbol = _listSymbol.slice(1500, 2000);
+            } else if (page === 5) {
+                _listSymbol = _listSymbol.slice(2000, _listDataSymbol.length);
+            }
+            setLoading(true);
+        }
         // _listSymbol = _listSymbol.slice(0, 3);
         _.forEach(_listSymbol, async (symbol, indexSymbol) => {
             body.symbol = symbol
@@ -112,8 +126,8 @@ const MexcTrading = () => {
                             }
                             return item
                         })
-                        setLoading(false);
                         if ((indexSymbol + 1) === _listSymbol.length) {
+                            setLoading(false);
                             setListDataSymbol(_listDataSymbol)
                             ToastUtil.success("Tải thông tin mã chứng khoán thành công");
                             return
@@ -139,13 +153,17 @@ const MexcTrading = () => {
         return moment(timestamp).format('HH:mm:ss - DD/MM/YYYY') || "";
     }
 
-    console.log("Mexc_render", listDataSymbol)
+    useEffect(() => {
+        fetchInfoSymbol()
+    }, [page]);
+
+    console.log("Mexc_render", page, listDataSymbol)
     return (
         <div div className='mexc-trading' >
             <div className="mexc-trading-container">
                 <div className="mexc-trading-content">
                     <div className="container-action style-add">
-                        <button className="btn btn-add" onClick={fetchInfoSymbol}>Call Data </button>
+                        <button className="btn btn-add" onClick={() => fetchInfoSymbol()}>Call Data </button>
                     </div>
                     <div className="table-all-broker">
                         <Table
@@ -153,17 +171,22 @@ const MexcTrading = () => {
                             // columns={columns}
                             dataSource={listDataSymbol}
                             virtual
-                            // scroll={{ x: 1000, y: 500 }}
-                            pagination={false} // Disable pagination
-                            scroll={{ x: 1000 }}
+                            scroll={{ x: 1000, y: 500 }}
+                            pagination={{
+                                pageSize: 500,
+                                total: listDataSymbol.length,
+                                onChange: (page) => {
+                                    setPage(page)
+                                },
+                            }}
+                            // scroll={{ x: 1000 }}
                             sticky={true}
                         >
                             <Column
-                                title="STT" dataIndex="index" key="index" width={100} align='center'
+                                title="STT" dataIndex="index" key="index" width={50} align='center'
                                 render={(text, record, index) => index + 1}
                             />
-                            <Column title="Mã chứng khoán" dataIndex="symbol" key="symbol" width={100} align='center' />
-
+                            <Column title="Mã" dataIndex="symbol" key="symbol" width={100} align='center' />
                             <Column
                                 title="KLTB 3 ngày trước"
                                 dataIndex="averageVolume3DaysPre"

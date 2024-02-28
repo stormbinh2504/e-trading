@@ -29,7 +29,7 @@ instance.interceptors.response.use(
         if (data.hasOwnProperty('status') && data['status'] == 500) {
             return Promise.reject(createError(data['status'], data['status'], data['message']));
         }
-        console.log('axiosBinance_interceptors', data);
+        // console.log('axiosBinance_interceptors', data);
         return data;
     },
     async (error) => {
