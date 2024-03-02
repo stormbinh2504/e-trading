@@ -17,6 +17,17 @@ import axios from 'axios';
 const { Column, ColumnGroup } = Table;
 
 
+// var a = 2; // Giá trị ngày hôm nay
+// var b = 1; // Giá trị ngày hôm trước
+
+// // Tính phần trăm thay đổi
+// var percentChange1 = ((a - b) / a) * 100; // Tăng thêm
+// var percentChange2 = ((a - b) / b) * 100; // Tăng bao nhiêu % chứng khoán dùng thằng này
+
+// // In kết quả
+// console.log("Phần trăm thay đổi: " + percentChange1 + "%"); = 50%
+// console.log("Phần trăm thay đổi: " + percentChange2 + "%"); = 100%
+
 const interval = '1d'; // Daily interval
 const startTime = Date.now() - (6 * 24 * 60 * 60 * 1000); // Start time (6 days ago)
 const endTime = Date.now(); // End time (current time)
@@ -37,77 +48,103 @@ const columns = [
         width: 150,
         align: 'center',
     },
+
     {
-        title: '3 Ngày',
-        children: [
+        title: '% KLTB 3 ngày',
+        dataIndex: 'percentAverageVolume3Days',
+        key: 'percentAverageVolume3Days',
+        width: 100,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>,
+        onFilter: (value, record) => record.percentAverageVolume3Days > value,
+        filters: [
             {
-                title: 'KLTB 3 ngày trước',
-                dataIndex: 'averageVolume3DaysPre',
-                key: 'averageVolume3DaysPre',
-                width: 160,
-                align: 'center',
-                className: 'bg-day-3',
-                sorter: (a, b) => a.averageVolume3DaysPre - b.averageVolume3DaysPre,
-                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
+                text: '>100%',
+                value: 100,
             },
             {
-                title: 'KLTB 3 ngày tiếp theo',
-                dataIndex: 'averageVolume3DaysNext',
-                key: 'averageVolume3DaysNext',
-                width: 160,
-                align: 'center',
-                className: 'bg-day-3',
-                sorter: (a, b) => a.averageVolume3DaysNext - b.averageVolume3DaysNext,
-                render: (text) => <span>{CommonUtils.formatNumber(text, 0)}</span>
-            },
-            {
-                title: '% KLTB 3 ngày',
-                dataIndex: 'percentAverageVolume3Days',
-                key: 'percentAverageVolume3Days',
-                width: 100,
-                align: 'center',
-                className: 'bg-day-3',
-                sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
-                render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>,
-                onFilter: (value, record) => record.percentAverageVolume3Days > value,
-                filters: [
-                    {
-                        text: '>100%',
-                        value: 100,
-                    },
-                    {
-                        text: '>500%',
-                        value: 500,
-                    },
-                ],
-            },
-            {
-                title: 'Tiền 24h 1 ngày trước',
-                dataIndex: 'money24hLastDay',
-                key: 'money24hLastDay',
-                width: 100,
-                align: 'center',
-                className: 'bg-day-3',
-                sorter: (a, b) => a.money24hLastDay - b.money24hLastDay,
-                render: (text) => <span className={""} style={{ fontWeight: "500" }}>{CommonUtils.formatNumber(text)}</span>,
-                onFilter: (value, record) => record.money24hLastDay > value,
-                filters: [
-                    {
-                        text: '>300,000',
-                        value: 300000,
-                    },
-                    {
-                        text: '>1,000,000',
-                        value: 1000000,
-                    },
-                    {
-                        text: '>3,000,000',
-                        value: 3000000,
-                    },
-                ],
+                text: '>500%',
+                value: 500,
             },
         ],
-    }
+    },
+    {
+        title: '% KL thay đổi 2 phiên gần nhất',
+        dataIndex: 'percentChangeVolumnLastDay',
+        key: 'percentChangeVolumnLastDay',
+        width: 160,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.percentChangeVolumnLastDay - b.percentChangeVolumnLastDay,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text, 0)}%</span>,
+        onFilter: (value, record) => record.percentChangeVolumnLastDay > value,
+        filters: [
+            {
+                text: '>10%',
+                value: 10,
+            },
+            {
+                text: '>30%',
+                value: 30,
+            },
+            {
+                text: '>50%',
+                value: 50,
+            },
+        ],
+    },
+    {
+        title: '% Giá thay đổi 2 phiên gần nhất',
+        dataIndex: 'precentChangePriceLastDay',
+        key: 'precentChangePriceLastDay',
+        width: 160,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.precentChangePriceLastDay - b.precentChangePriceLastDay,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text, 0)}%</span>,
+        onFilter: (value, record) => record.precentChangePriceLastDay > value,
+        filters: [
+            {
+                text: '>10%',
+                value: 10,
+            },
+            {
+                text: '>30%',
+                value: 30,
+            },
+            {
+                text: '>50%',
+                value: 50,
+            },
+        ],
+    },
+    {
+        title: 'Tiền 24h 1 ngày trước',
+        dataIndex: 'money24hLastDay',
+        key: 'money24hLastDay',
+        width: 100,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.money24hLastDay - b.money24hLastDay,
+        render: (text) => <span className={""} style={{ fontWeight: "500" }}>{CommonUtils.formatNumber(text)}</span>,
+        onFilter: (value, record) => record.money24hLastDay > value,
+        filters: [
+            {
+                text: '>300,000',
+                value: 300000,
+            },
+            {
+                text: '>1,000,000',
+                value: 1000000,
+            },
+            {
+                text: '>3,000,000',
+                value: 3000000,
+            },
+        ],
+    },
 ]
 const MexcTrading = () => {
     const history = useHistory()
@@ -142,10 +179,12 @@ const MexcTrading = () => {
                     data = _.map(data, (item, index) => {
                         return {
                             ...item,
-                            averageVolume3DaysPre: 0,
-                            averageVolume3DaysNext: 0,
+                            // averageVolume3DaysPre: 0,
+                            // averageVolume3DaysNext: 0,
                             percentAverageVolume3Days: 0,
                             money24hLastDay: 0,
+                            percentChangeVolumnLastDay: 0,
+                            precentChangePriceLastDay: 0,
                         }
                     })
 
@@ -193,10 +232,19 @@ const MexcTrading = () => {
                 .then(async data => {
                     if (data) {
                         let money24hLastDay = 0
-                        if (data.length > 5) {
-                            let itemLastDay = data[4]
+                        let percentChangeVolumnLastDay = 0 // % thay đổi khối lượng ngày hôm trước với hôm nay
+                        let precentChangePriceLastDay = 0 // % thay đổi giá ngày hôm trước với hôm nay
+                        let dataLength = data.length
+                        if (dataLength > 3) {
+                            let itemToday = data[dataLength - 1]  //dữ liệu ngày hôm nay
+                            let itemLastDay = data[dataLength - 2] //dữ liệu ngày 1 ngày trước
+                            let item2DayBefore = data[dataLength - 3] //dữ liệu 2 ngày trước
                             let averageHighLowLastDay = ((Number(itemLastDay[2]) + Number(itemLastDay[3])) / 2) || 0
                             money24hLastDay = (averageHighLowLastDay * Number(itemLastDay[5])) || 0
+
+
+                            percentChangeVolumnLastDay = (Number(itemLastDay[5]) - Number(item2DayBefore[5])) * 100 / Number(item2DayBefore[5])
+                            precentChangePriceLastDay = (Number(itemLastDay[4]) - Number(item2DayBefore[4])) / Number(item2DayBefore[4]) * 100
                         }
 
                         let data3DaysPre = data.slice(0, 3);
@@ -214,10 +262,12 @@ const MexcTrading = () => {
                             if (item.symbol == symbol) {
                                 return {
                                     ...item,
-                                    averageVolume3DaysPre: averageVolume3DaysPre || 0,
-                                    averageVolume3DaysNext: averageVolume3DaysNext || 0,
+                                    // averageVolume3DaysPre: averageVolume3DaysPre || 0,
+                                    // averageVolume3DaysNext: averageVolume3DaysNext || 0,
                                     percentAverageVolume3Days: percentAverageVolume3Days || 0,
                                     money24hLastDay: money24hLastDay || 0,
+                                    percentChangeVolumnLastDay: percentChangeVolumnLastDay || 0,
+                                    precentChangePriceLastDay: precentChangePriceLastDay || 0,
                                 }
                             }
                             return item
