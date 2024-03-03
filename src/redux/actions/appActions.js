@@ -11,7 +11,7 @@ import { accountService } from '../../services';
 export const setTypeUser = (type, callback) => {
     return (dispatch, getState) => {
         const state = getState();
-
+        return
         if (type === TYPE_USER.BROKER) {
             if (CommonUtils.checkLogined()) {
                 dispatch({

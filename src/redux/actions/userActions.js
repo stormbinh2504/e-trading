@@ -17,10 +17,7 @@ export const loginSucess = (res) => {
             type: actionTypes.USER_LOGIN_SUCCESS,
             data: res
         })
-        dispatch(actions.setTypeUser(TYPE_USER.BROKER, () => {
-            dispatch(push("/home-broker"))
-        }))
-        dispatch(actions.fetchUserInfoFromSavedSession());
+        // dispatch(actions.fetchUserInfoFromSavedSession());
     };
 };
 

@@ -5,7 +5,6 @@ import Header from '../Header/Header'
 import "./Home.scss"
 import ProjectTop from './ProjectTop/ProjectTop'
 import ProjectLoan from './ProjectLoan/ProjectLoan'
-import SearchNewsHome from './SearchNewsHome/SearchNewsHome'
 import BlogsHighlight from './BlogsHighlight/BlogsHighlight';
 
 
@@ -76,7 +75,6 @@ const Home = () => {
     return (
         <div className='container-home'>
             <div className="container-slider" style={sytle1}>
-                <SearchNewsHome />
             </div>
             <div className="container-top-properties">
                 <div className="container top-properties-info">

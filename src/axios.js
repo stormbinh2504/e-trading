@@ -152,8 +152,8 @@ instance.interceptors.request.use(request => {
     // if (request.baseURL === globalVar.api.API_BASE_URL) {
     if (request && request.url) {
         const token = state.user.token != null ? state.user.token : null;
-        request.headers.common['x-devicetype'] = 'SessionID';
-        request.headers.common['x-lang'] = 'vi';
+        // request.headers.common['x-devicetype'] = 'SessionID';
+        // request.headers.common['x-lang'] = 'vi';
 
         if (token) {
             request.headers.Authorization = `Bearer ${token}`;

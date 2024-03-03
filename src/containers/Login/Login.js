@@ -4,13 +4,15 @@ import { sdkVNPTService, authService } from '../../services';
 import { compressImage } from "../../utils/imageUpload"
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from 'react-router-dom'
-import { loginStart, loginSucess, loginFail } from '../../redux/actions/userActions'
+import { loginStart, loginSucess, loginFail } from '../../redux/actions'
 import { alertType } from '../../redux/actions/alertActions'
 import { ToastUtil } from '../../utils'
 import { postDataAPI } from '../../utils/fetchData'
-
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import "./Login.scss"
-import axios from 'axios';
+import { appFirebase, uiConfig } from '../../firebase/firebaseconfig';
+import { getAuth } from "firebase/auth"; // Update import statement for auth
+import { firebaseMethods } from '../../firebase/firebaseMethods';
 
 const Login = () => {
     const history = useHistory()
@@ -42,7 +44,7 @@ const Login = () => {
         return true
     }
 
-    const Submit = async () => {
+    const Login = async () => {
         if (!ValidateForm()) {
             return
         }
@@ -53,18 +55,29 @@ const Login = () => {
 
         dispatch(alertType(true))
         dispatch(loginStart())
-        await authService.LoginClient(body)
+
+        try {
+            const user = await firebaseMethods.login(body);
+            dispatch(loginSucess(user));
+            dispatch(alertType(false));
+            history.push("/"); // Chuyển hướng đến trang đăng nhập
+            ToastUtil.success("Đăng nhập thành công");
+        } catch (error) {
+            dispatch(loginFail());
+            dispatch(alertType(false));
+            ToastUtil.errorApi(error, "Đăng nhập không thành công");
+        }
+    }
+
+    const DeleteAccount = async () => {
+        await firebaseMethods.deleteAccount("donamkhanh@gmail.com")
             .then(res => {
-                if (res) {
-                    dispatch(loginSucess(res))
-                    dispatch(alertType(false))
-                    ToastUtil.success("Đăng nhập thành công");
-                }
+                dispatch(alertType(false))
+                ToastUtil.success("Xóa thành công");
             })
             .catch(error => {
-                dispatch(loginFail())
                 dispatch(alertType(false))
-                ToastUtil.errorApi(error, "Đăng nhập không thành công");
+                ToastUtil.errorApi(error, "Đăng ký không thành công");
             });
     }
 
@@ -96,11 +109,17 @@ const Login = () => {
                     type="submit"
                     className="btn btn-submit w-100"
                     // disabled={email && password ? false : true}
-                    onClick={Submit}
+                    onClick={Login}
                 >
                     Đăng nhập
                 </button>
-
+                {/* < button
+                    className="btn btn-submit w-100"
+                    // disabled={email && password ? false : true}
+                    onClick={DeleteAccount}
+                >
+                    Xóa Account
+                </button> */}
                 <p className="my-2">
                     Bạn chưa có tài khoản{" "}
                     <Link to="/register" style={{ color: "crimson" }}>
@@ -108,6 +127,7 @@ const Login = () => {
                     </Link>
                 </p>
             </div >
+            {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={getAuth(appFirebase)} /> */}
         </div >
     )
 }

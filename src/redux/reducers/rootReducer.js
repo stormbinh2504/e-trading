@@ -33,7 +33,7 @@ const authPersistConfig = {
 const userPersistConfig = {
     ...persistCommonConfig,
     key: 'user',
-    whitelist: ['isLoggedIn', 'token', 'refreshToken']
+    whitelist: ['isLoggedIn', 'token', 'refreshToken', 'userInfo']
 };
 
 export default (history) => combineReducers({

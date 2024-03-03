@@ -9,12 +9,14 @@ import { alertType } from '../../../redux/actions/alertActions'
 import { CommonUtils, ToastUtil } from '../../../utils'
 import { postDataAPI } from '../../../utils/fetchData'
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import moment from 'moment'
 import "./MexcTrading.scss"
-import { Space, Table, Tag } from 'antd';
+import { Space, Table, Tag, Divider, Radio } from 'antd';
 import axios from 'axios';
+import { firebaseMethods } from '../../../firebase/firebaseMethods';
 // const listSymbol = ["ZENUSDT", "SUIUSDT"]
-const { Column, ColumnGroup } = Table;
+const { Column, ColumnGroup, } = Table;
 
 
 // var a = 2; // Giá trị ngày hôm nay
@@ -31,6 +33,7 @@ const { Column, ColumnGroup } = Table;
 const interval = '1d'; // Daily interval
 const startTime = Date.now() - (6 * 24 * 60 * 60 * 1000); // Start time (6 days ago)
 const endTime = Date.now(); // End time (current time)
+// rowSelection object indicates the need for row selection
 
 const columns = [
     {
@@ -82,16 +85,12 @@ const columns = [
         onFilter: (value, record) => record.percentChangeVolumnLastDay > value,
         filters: [
             {
-                text: '>10%',
-                value: 10,
-            },
-            {
-                text: '>30%',
-                value: 30,
-            },
-            {
                 text: '>50%',
                 value: 50,
+            },
+            {
+                text: '>100%',
+                value: 100,
             },
         ],
     },
@@ -104,19 +103,11 @@ const columns = [
         className: 'bg-day-3',
         sorter: (a, b) => a.precentChangePriceLastDay - b.precentChangePriceLastDay,
         render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text, 0)}%</span>,
-        onFilter: (value, record) => record.precentChangePriceLastDay > value,
+        onFilter: (value, record) => record.precentChangePriceLastDay < value,
         filters: [
             {
-                text: '>10%',
-                value: 10,
-            },
-            {
-                text: '>30%',
+                text: '<30%',
                 value: 30,
-            },
-            {
-                text: '>50%',
-                value: 50,
             },
         ],
     },
@@ -146,8 +137,9 @@ const columns = [
         ],
     },
 ]
-const MexcTrading = () => {
+const MexcTrading = ({ userInfo }) => {
     const history = useHistory()
+    const { email } = userInfo
     const dispatch = useDispatch()
     const { auth } = useSelector((state) => state);
 
@@ -158,8 +150,12 @@ const MexcTrading = () => {
     const [dataGroupSymbol, setDataGroupSymbol] = useState({})
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [selectedRowSymbols, setSelectedRowSymbols] = useState([]);
+    const [symbolsWatched, setSymboslWatched] = useState([]);
+
     useEffect(async () => {
         await fetchExchangeInfo();
+        await getSymbols();
     }, []);
 
     useEffect(async () => {
@@ -179,6 +175,7 @@ const MexcTrading = () => {
                     data = _.map(data, (item, index) => {
                         return {
                             ...item,
+                            key: item.symbol,
                             // averageVolume3DaysPre: 0,
                             // averageVolume3DaysNext: 0,
                             percentAverageVolume3Days: 0,
@@ -306,7 +303,63 @@ const MexcTrading = () => {
         }
     }, [page]);
 
-    console.log("Mexc_render", page, listDataSymbol)
+    // const selectRow = (record) => {
+    //     const updatedSelectedRowKeys = [...selectedRowKeys];
+    //     if (updatedSelectedRowKeys.includes(record.key)) {
+    //         const index = updatedSelectedRowKeys.indexOf(record.key);
+    //         updatedSelectedRowKeys.splice(index, 1);
+    //     } else {
+    //         updatedSelectedRowKeys.push(record.key);
+    //     }
+    //     setSelectedRowSymbols(updatedSelectedRowKeys);
+    // };
+
+    const onSelectedRowKeysChange = (selectedRowKeys, selectedRows) => {
+        setSelectedRowSymbols(selectedRowKeys);
+    }
+
+    const addSymbols = async () => {
+        let data = {
+            "symbols": selectedRowSymbols,
+        }
+        await firebaseMethods.setDataToFirebase(email, "listSymbols", data)
+            .then(res => {
+                ToastUtil.success("Lưu danh sách mã đã chọn thành công");
+            })
+            .catch(error => {
+                ToastUtil.errorApi(error, "Lưu danh sách mã đã chọn không thành công");
+            });
+    }
+
+    const clearAllSymbols = async () => {
+        let data = {
+            "symbols": [],
+        }
+        await firebaseMethods.setDataToFirebase(email, "listSymbols", data)
+            .then(res => {
+                setSymboslWatched([]);
+                setSelectedRowSymbols([])
+            })
+            .catch(error => {
+                ToastUtil.errorApi(error, "Lưu danh sách mã đã chọn không thành công");
+            });
+    }
+
+    const getSymbols = async () => {
+        await firebaseMethods.getDatafromFirebase(email, "listSymbols")
+            .then(res => {
+                if (res && res.symbols && res.symbols.length > 0) {
+                    setSymboslWatched(res.symbols);
+                    setSelectedRowSymbols(res.symbols);
+                }
+                ToastUtil.success("Tải danh sách mã đã chọn thành công");
+            })
+            .catch(error => {
+                ToastUtil.errorApi(error, "Tải danh sách mã đã chọn không thành công");
+            });
+    }
+
+    console.log("Mexc_render", selectedRowSymbols)
     return (
         <div div className='mexc-trading' >
             <div className="mexc-trading-container">
@@ -318,9 +371,22 @@ const MexcTrading = () => {
                                 fetchInfoSymbol()
                             }
                         }>Call Data </button>
+                        <button className="btn btn-add" onClick={addSymbols}>Luu symbol </button>
+                        <button className="btn btn-add" onClick={getSymbols}>Lay symbol </button>
+                        <button className="btn btn-add" onClick={clearAllSymbols}>Clear All symbol </button>
                     </div>
                     <div className="table-all-broker">
                         <Table
+                            rowSelection={{
+                                type: 'checkbox',
+                                selectedRowKeys: selectedRowSymbols,
+                                onChange: onSelectedRowKeysChange
+                            }}
+                            // onRow={(record) => ({
+                            //     onClick: () => {
+                            //         selectRow(record);
+                            //     }
+                            // })}
                             loading={loading}
                             columns={columns}
                             dataSource={listDataSymbol}
@@ -338,4 +404,8 @@ const MexcTrading = () => {
     )
 }
 
-export default MexcTrading
+const mapStateToProps = state => ({
+    userInfo: state.user.userInfo,
+});
+
+export default connect(mapStateToProps)(MexcTrading);

@@ -9,6 +9,7 @@ import { alertType } from '../../redux/actions/alertActions'
 import { RegexUtils, ToastUtil } from '../../utils'
 
 import axios from 'axios';
+import { firebaseMethods } from '../../firebase/firebaseMethods';
 
 const Register = () => {
 
@@ -20,8 +21,6 @@ const Register = () => {
     const [isShowPass, setIsShowPass] = useState(false)
 
     const [userData, setUserData] = useState({
-        "firstName": "",
-        "lastName": "",
         "email": "",
         "password": "",
     })
@@ -33,14 +32,6 @@ const Register = () => {
     }
 
     const ValidateForm = () => {
-        if (!userData.firstName) {
-            ToastUtil.error("Họ không dược để trống");
-            return false
-        }
-        if (!userData.lastName) {
-            ToastUtil.error("Têm không dược để trống");
-            return false
-        }
         if (!userData.email) {
             ToastUtil.error("Email không dược để trống");
             return false
@@ -68,22 +59,18 @@ const Register = () => {
         let body = {
             "email": userData.email,
             "password": userData.password,
-            "firstName": userData.firstName,
-            "lastName": userData.lastName
         }
 
         dispatch(alertType(true))
-        await authService.RegisterClient(body)
+        await firebaseMethods.signup(body)
             .then(res => {
-                console.log("binh_check", res)
                 dispatch(alertType(false))
                 ToastUtil.success("Đăng ký thành công");
                 setUserData({
-                    "firstName": "",
-                    "lastName": "",
                     "email": "",
                     "password": "",
                 })
+                // history.push("/login")
             })
             .catch(error => {
                 dispatch(alertType(false))
@@ -105,25 +92,6 @@ const Register = () => {
         <div div className='regiter' >
             <div div className='form-regiter' >
                 <h3 className="text-uppercase text-center mb-4">Đăng ký</h3>
-
-                <div className="form-group multi-group">
-                    <div className="first-name">
-                        <label htmlFor="first-name">Họ</label>
-                        <input type="text" className="form-control-input" id="first-name"
-                            name="firstName"
-                            onChange={handleChangeInput} value={userData.firstName}
-                        />
-                    </div>
-                    <div className="last-name">
-                        <label htmlFor="last-name">Tên</label>
-                        <input type="text" className="form-control-input" id="last-name"
-                            name="lastName"
-                            onChange={handleChangeInput} value={userData.lastName}
-                        />
-                    </div>
-                </div>
-
-
                 <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input type="text" className="form-control-input" id="email"

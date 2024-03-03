@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useHistory, withRouter } from 'react-router-dom'
-import { PATH_NAME, setPathName } from '../../utils';
+import { PATH_NAME, ToastUtil, setPathName } from '../../utils';
 import "./Header.scss"
 import logo from "../../assets/images/company/logo.png"
-
-const Header = () => {
+import * as actions from '../../redux/actions'
+import { getAuth, signOut } from "firebase/auth";
+import { connect } from 'react-redux';
+import { auth } from '../../firebase/firebaseconfig';
+import { firebaseMethods } from '../../firebase/firebaseMethods';
+import { useSelector, useDispatch } from "react-redux";
+const Header = ({ isLoggedIn, userInfo }) => {
     const history = useHistory()
-
+    const dispatch = useDispatch()
+    const { email } = userInfo
     const [isOpenModal, setOpenModal] = useState(false)
     const onRedirectHome = () => {
         window.location.href = '#'
@@ -54,24 +60,36 @@ const Header = () => {
         const offset = offsetTop > 0 ? offsetTop : 0
         window.scrollTo(0, offset)
     }
+
+    const onHandleLogout = async () => {
+        await firebaseMethods.logout()
+            .then(res => {
+                dispatch(actions.logout())
+                history.push("/login"); // Chuyển hướng đến trang đăng nhập
+            })
+            .catch(error => {
+                ToastUtil.errorApi(error, "Đăng ký không thành công");
+            });
+    }
+
     console.log("first", isOpenModal)
     return (
         <div id="header" className='header'>
             <div className="container">
-                <div id="container-header" className="container-header item-center">
+                <div id="container-header" className="container-header">
                     <div className="container-left">
-                        <div className='container-logo item-center' onClick={onRedirectHome}>
+                        <div className='container-logo' onClick={onRedirectHome}>
                             <img className="img-logo" src={logo} />
                         </div>
-                        <div className="container-menu-header">
+                        <div className="container-menu-header item-center">
                             <ul className="list-menu-header item-center">
                                 <li className="item-menu-header">
-                                    <a href={PATH_NAME.BINANCE}>
+                                    <a onClick={() => onRedirectByPathname(PATH_NAME.BINANCE)}>
                                         BINANCE
                                     </a>
                                 </li>
                                 <li className="item-menu-header">
-                                    <a href={PATH_NAME.MEXC}>
+                                    <a onClick={() => onRedirectByPathname(PATH_NAME.MEXC)}>
                                         MEXC
                                     </a>
                                 </li>
@@ -124,10 +142,31 @@ const Header = () => {
 
                         </div>
                     </div>
+                    <div className="container-right">
+                        <div className="wrap-content-right item-center">
+                            <div className="info-user">
+                                {userInfo?.email}
+                            </div>
+                            {isLoggedIn ?
+                                <button className='btn btn-login' onClick={onHandleLogout}>
+                                    Logout
+                                </button> :
+                                <button className='btn btn-login' onClick={() => onRedirectByPathname(PATH_NAME.LOGIN)}>
+                                    Login
+                                </button>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
 
-export default Header
+const mapStateToProps = state => ({
+    isLoggedIn: state.user.isLoggedIn,
+    userInfo: state.user.userInfo,
+    isLogginFail: state.user.isLogginFail,
+});
+
+export default connect(mapStateToProps)(Header);

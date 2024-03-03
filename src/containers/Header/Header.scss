@@ -18,14 +18,13 @@
 
     .container-header {
         display        : flex;
-        height         : 100%;
-        margin         : 0 auto;
-        min-height     : 45px;
         justify-content: space-between;
-        padding        : 16px 0px;
 
         .container-left {
-            display: flex;
+            display   : flex;
+            height    : 100%;
+            min-height: 45px;
+            padding   : 16px 0px;
 
             .container-logo {
                 cursor: pointer;
@@ -61,13 +60,23 @@
         }
 
         .container-right {
-            .btn-header {
-                border-radius: $border_radius;
-                padding      : 5px 20px;
-                background   : $primary_1;
-                font-weight  : 500;
-                font-size    : 16px;
-                line-height  : 24px;
+            .wrap-content-right {
+                display: flex;
+                gap    : 10px;
+                height : 100%;
+
+                .info-user {
+                    color: #ffffff;
+                }
+
+                .btn-login {
+                    border-radius: $border_radius;
+                    padding      : 5px 20px;
+                    background   : $primary_1;
+                    font-weight  : 500;
+                    font-size    : 16px;
+                    line-height  : 24px;
+                }
             }
         }
     }

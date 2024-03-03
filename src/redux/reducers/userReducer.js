@@ -22,16 +22,16 @@ const userReducer = (state = initialState, action) => {
                 userInfo: {},
             };
         case actionTypes.USER_LOGIN_SUCCESS:
-            const { userInfo, token, refreshToken } = action.data
+            const { reloadUserInfo, accessToken, refreshToken } = action.data
             return {
                 ...state,
                 isLoggedIn: true,
                 isLoggingIn: false,
                 isLogginFail: false,
-                refreshToken,
-                token,
+                refreshToken: refreshToken | "",
+                token: accessToken,
                 userInfo: {
-                    ...userInfo,
+                    ...reloadUserInfo,
                 }
             };
         case actionTypes.USER_LOGIN_FAIL:

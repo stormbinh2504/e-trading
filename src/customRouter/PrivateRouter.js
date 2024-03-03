@@ -6,7 +6,7 @@ import { PATH_NAME } from "../utils";
 
 // isLoggedIn, isLogginFail, isLoggingIn
 const defaultPath = PATH_NAME.LOGIN
-const PrivateRoute = ({ component: Component, isLoggedIn, isLogginFail, ...rest }) => (
+const PrivateRouter = ({ component: Component, isLoggedIn, isLogginFail, ...rest }) => (
     <Route
         {...rest}
         render={props =>
@@ -16,7 +16,7 @@ const PrivateRoute = ({ component: Component, isLoggedIn, isLogginFail, ...rest 
     />
 );
 
-PrivateRoute.propTypes = {
+PrivateRouter.propTypes = {
     user: PropTypes.object.isRequired
 };
 
@@ -25,4 +25,4 @@ const mapStateToProps = state => ({
     isLogginFail: state.user.isLogginFail,
 });
 
-export default connect(mapStateToProps)(PrivateRoute);
+export default connect(mapStateToProps)(PrivateRouter);

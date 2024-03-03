@@ -4,7 +4,6 @@
   "proxy": "http://localhost:8080",
   "private": true,
   "dependencies": {
-    "@paypal/react-paypal-js": "^7.8.1",
     "@stripe/react-stripe-js": "^1.15.0",
     "@stripe/stripe-js": "^1.44.1",
     "@testing-library/jest-dom": "^5.16.4",
@@ -32,6 +31,7 @@
     "react-datepicker": "^4.11.0",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.5",
+    "react-firebaseui": "^6.0.0",
     "react-icons": "^4.3.1",
     "react-image-gallery": "^1.2.12",
     "react-number-format": "^5.1.4",
