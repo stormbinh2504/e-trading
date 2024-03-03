@@ -72,6 +72,17 @@ const Header = ({ isLoggedIn, userInfo }) => {
             });
     }
 
+    const hideEmail = (email) => {
+        let maskedEmail = ""
+        if (email) {
+            const [prefix, domain] = email.split("@");
+            const prefixLength = prefix.length;
+            const maskedPrefix = "***" + prefix.slice(3, prefixLength - 3) + "***";
+            maskedEmail = maskedPrefix + "@" + domain;
+        }
+        return maskedEmail
+    }
+
     console.log("first", isOpenModal)
     return (
         <div id="header" className='header'>
@@ -145,7 +156,7 @@ const Header = ({ isLoggedIn, userInfo }) => {
                     <div className="container-right">
                         <div className="wrap-content-right item-center">
                             <div className="info-user">
-                                {userInfo?.email}
+                                {hideEmail(userInfo?.email)}
                             </div>
                             {isLoggedIn ?
                                 <button className='btn btn-login' onClick={onHandleLogout}>
