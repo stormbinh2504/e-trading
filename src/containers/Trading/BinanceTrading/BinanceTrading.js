@@ -18,8 +18,119 @@ const { Column, ColumnGroup } = Table;
 
 
 const interval = '1d'; // Daily interval
-const startTime = Date.now() - (14 * 24 * 60 * 60 * 1000); // Start time (14 days ago)
+const startTime = Date.now() - (6 * 24 * 60 * 60 * 1000); // Start time (6 days ago)
 const endTime = Date.now(); // End time (current time)
+
+const columns = [
+    {
+        title: 'STT',
+        dataIndex: 'index',
+        key: 'index',
+        width: 50,
+        align: 'center',
+        render: (text, record, index) => (index + 1)
+    },
+    {
+        title: 'Mã',
+        dataIndex: 'symbol',
+        key: 'symbol',
+        width: 150,
+        align: 'center',
+        onCell: (record) => {
+            return {
+                onClick: () => {
+                    const convertedSymbol = record.symbol.replace("USDT", "");
+                    CommonUtils.onCopyText(convertedSymbol)
+                }
+            };
+        }
+    },
+
+    {
+        title: '% KLTB 3 ngày',
+        dataIndex: 'percentAverageVolume3Days',
+        key: 'percentAverageVolume3Days',
+        width: 100,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>,
+        onFilter: (value, record) => record.percentAverageVolume3Days > value,
+        filters: [
+            {
+                text: '>100%',
+                value: 100,
+            },
+            {
+                text: '>500%',
+                value: 500,
+            },
+        ],
+    },
+    {
+        title: '% KL thay đổi 2 phiên gần nhất',
+        dataIndex: 'percentChangeVolumnLastDay',
+        key: 'percentChangeVolumnLastDay',
+        width: 160,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.percentChangeVolumnLastDay - b.percentChangeVolumnLastDay,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text, 0)}%</span>,
+        onFilter: (value, record) => record.percentChangeVolumnLastDay > value,
+        filters: [
+            {
+                text: '>50%',
+                value: 50,
+            },
+            {
+                text: '>100%',
+                value: 100,
+            },
+        ],
+    },
+    {
+        title: '% Giá thay đổi 2 phiên gần nhất',
+        dataIndex: 'precentChangePriceLastDay',
+        key: 'precentChangePriceLastDay',
+        width: 160,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.precentChangePriceLastDay - b.precentChangePriceLastDay,
+        render: (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text, 0)}%</span>,
+        onFilter: (value, record) => record.precentChangePriceLastDay < value,
+        filters: [
+            {
+                text: '<30%',
+                value: 30,
+            },
+        ],
+    },
+    {
+        title: 'Tiền 24h 1 ngày trước',
+        dataIndex: 'money24hLastDay',
+        key: 'money24hLastDay',
+        width: 100,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.money24hLastDay - b.money24hLastDay,
+        render: (text) => <span className={""} style={{ fontWeight: "500" }}>{CommonUtils.formatNumber(text)}</span>,
+        onFilter: (value, record) => record.money24hLastDay > value,
+        filters: [
+            {
+                text: '>300,000',
+                value: 300000,
+            },
+            {
+                text: '>1,000,000',
+                value: 1000000,
+            },
+            {
+                text: '>3,000,000',
+                value: 3000000,
+            },
+        ],
+    },
+]
 
 const BinanceTrading = () => {
     const history = useHistory()
@@ -43,14 +154,27 @@ const BinanceTrading = () => {
     const fetchExchangeInfo = async () => {
         dispatch(alertType(true))
         await apiBinance.getExchangeInfo()
-            .then(data => {
-                if (data && data.symbols) {
-                    let dataSymbol = _.map(data.symbols, (item, index) => {
+            .then(res => {
+                if (res && res.symbols) {
+                    let data = res.symbols
+                    data = _.map(data, (item, index) => {
+                        return {
+                            ...item,
+                            key: item.symbol,
+                            // averageVolume3DaysPre: 0,
+                            // averageVolume3DaysNext: 0,
+                            percentAverageVolume3Days: 0,
+                            money24hLastDay: 0,
+                            percentChangeVolumnLastDay: 0,
+                            precentChangePriceLastDay: 0,
+                        }
+                    })
+
+                    let dataSymbol = _.map(data, (item, index) => {
                         return item.symbol
                     })
-                    console.log("Binance_fetchExchangeInfo", dataSymbol)
                     setListSymbol(dataSymbol)
-                    setListDataSymbol(data.symbols)
+                    setListDataSymbol(data)
                     dispatch(alertType(false))
                     ToastUtil.success("Tải danh sách mã chứng khoán thành công");
                 }
@@ -75,42 +199,49 @@ const BinanceTrading = () => {
             await apiBinance.getInfoSymbol(body)
                 .then(async data => {
                     if (data && data.length > 0) {
-                        let data7DaysPre = data.slice(0, 7);
-                        let data7DaysNext = data.slice(7, 14);
+                        let money24hLastDay = 0
+                        let percentChangeVolumnLastDay = 0 // % thay đổi khối lượng ngày hôm trước với hôm nay
+                        let precentChangePriceLastDay = 0 // % thay đổi giá ngày hôm trước với hôm nay
+                        let dataLength = data.length
+                        if (dataLength > 3) {
+                            let itemToday = data[dataLength - 1]  //dữ liệu ngày hôm nay
+                            let itemLastDay = data[dataLength - 2] //dữ liệu ngày 1 ngày trước
+                            let item2DayBefore = data[dataLength - 3] //dữ liệu 2 ngày trước
+                            let averageHighLowLastDay = ((Number(itemLastDay[2]) + Number(itemLastDay[3])) / 2) || 0
+                            money24hLastDay = (averageHighLowLastDay * Number(itemLastDay[5])) || 0
 
-                        let data3DaysPre = data.slice(8, 11);
-                        let data3DaysNext = data.slice(11, 14);
 
-                        const totalVolume7DaysPre = data7DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
-                        const averageVolume7DaysPre = totalVolume7DaysPre / 7;
-                        const totalVolume7DaysNext = data7DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
-                        const averageVolume7DaysNext = totalVolume7DaysNext / 7;
-                        const percentAverageVolume7Days = (Number(averageVolume7DaysNext) - Number(averageVolume7DaysPre)) * 100 / Number(averageVolume7DaysPre)
+                            percentChangeVolumnLastDay = (Number(itemLastDay[5]) - Number(item2DayBefore[5])) * 100 / Number(item2DayBefore[5])
+                            precentChangePriceLastDay = (Number(itemLastDay[4]) - Number(item2DayBefore[4])) / Number(item2DayBefore[4]) * 100
+                        }
+
+                        let data3DaysPre = data.slice(0, 3);
+                        let data3DaysNext = data.slice(3, 6);
 
                         const totalVolume3DaysPre = data3DaysPre.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysPre = totalVolume3DaysPre / 3;
                         const totalVolume3DaysNext = data3DaysNext.reduce((sum, item) => sum + Number(item[5]), 0);
                         const averageVolume3DaysNext = totalVolume3DaysNext / 3;
-                        const percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
-
+                        let percentAverageVolume3Days = 0
+                        if (averageVolume3DaysPre && averageVolume3DaysPre != 0) percentAverageVolume3Days = (Number(averageVolume3DaysNext) - Number(averageVolume3DaysPre)) * 100 / Number(averageVolume3DaysPre)
 
 
                         _listDataSymbol = _.map(_listDataSymbol, (item, index) => {
                             if (item.symbol == symbol) {
                                 return {
                                     ...item,
-                                    averageVolume7DaysPre,
-                                    averageVolume7DaysNext,
-                                    percentAverageVolume7Days: percentAverageVolume7Days,
-                                    averageVolume3DaysPre,
-                                    averageVolume3DaysNext,
-                                    percentAverageVolume3Days: percentAverageVolume3Days,
+                                    // averageVolume3DaysPre: averageVolume3DaysPre || 0,
+                                    // averageVolume3DaysNext: averageVolume3DaysNext || 0,
+                                    percentAverageVolume3Days: percentAverageVolume3Days || 0,
+                                    money24hLastDay: money24hLastDay || 0,
+                                    percentChangeVolumnLastDay: percentChangeVolumnLastDay || 0,
+                                    precentChangePriceLastDay: precentChangePriceLastDay || 0,
                                 }
                             }
                             return item
                         })
-                        setLoading(false);
                         if ((indexSymbol + 1) === _listSymbol.length) {
+                            setLoading(false);
                             setListDataSymbol(_listDataSymbol)
                             ToastUtil.success("Tải thông tin mã chứng khoán thành công");
                             return
@@ -147,76 +278,15 @@ const BinanceTrading = () => {
                     <div className="table-all-broker">
                         <Table
                             loading={loading}
-                            // columns={columns}
+                            columns={columns}
                             dataSource={listDataSymbol}
-                            virtual
-                            // scroll={{ x: 1000, y: 500 }}
-                            pagination={false} // Disable pagination
-                            scroll={{ x: 1000 }}
+                            // virtual
+                            scroll={{ x: 1000, y: 500 }}
+                            pagination={false}
+                            // scroll={{ x: 1000 }}
                             sticky={true}
                         >
-                            <Column
-                                title="STT" dataIndex="index" key="index" width={100} align='center'
-                                render={(text, record, index) => index + 1}
-                            />
-                            <Column title="Mã chứng khoán" dataIndex="symbol" key="symbol" width={100} align='center' />
 
-                            <Column
-                                title="KLTB 3 ngày trước"
-                                dataIndex="averageVolume3DaysPre"
-                                key="averageVolume3DaysPre"
-                                width={250} align='center'
-                                sorter={(a, b) => a.averageVolume3DaysPre - b.averageVolume3DaysPre}
-                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
-
-                            />
-                            <Column
-                                title="KLTB 3 ngày tiếp theo"
-                                dataIndex="averageVolume3DaysNext"
-                                key="averageVolume3DaysNext"
-                                width={250} align='center'
-                                sorter={(a, b) => a.averageVolume3DaysNext - b.averageVolume3DaysNext}
-                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
-                            />
-                            <Column
-                                title="% KLTB 3 ngày"
-                                dataIndex="percentAverageVolume3Days"
-                                key="percentAverageVolume3Days"
-                                width={250} align='center'
-                                sorter={(a, b) => a.percentAverageVolume3Days - b.percentAverageVolume3Days}
-                                render={
-                                    (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
-                                }
-                            />
-
-
-                            <Column
-                                title="KLTB 7 ngày trước"
-                                dataIndex="averageVolume7DaysPre"
-                                key="averageVolume7DaysPre"
-                                width={250} align='center'
-                                sorter={(a, b) => a.averageVolume7DaysPre - b.averageVolume7DaysPre}
-                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
-
-                            />
-                            <Column
-                                title="KLTB 7 ngày tiếp theo"
-                                dataIndex="averageVolume7DaysNext"
-                                key="averageVolume7DaysNext"
-                                width={250} align='center'
-                                sorter={(a, b) => a.averageVolume7DaysNext - b.averageVolume7DaysNext}
-                                render={(text) => <span>{CommonUtils.formatNumber(text)}</span>}
-                            />
-                            <Column
-                                title="% KLTB 7 ngày"
-                                dataIndex="percentAverageVolume7Days"
-                                key="percentAverageVolume7Days"
-                                width={250} align='center'
-                                sorter={(a, b) => a.percentAverageVolume7Days - b.percentAverageVolume7Days}
-                                render={
-                                    (text) => <span className={"" + CommonUtils.getClassCheckValue(text)}>{CommonUtils.formatNumber(text)}%</span>
-                                }
-                            />
                         </Table>
                     </div>
                 </div>

@@ -95,12 +95,12 @@ const Header = ({ isLoggedIn, userInfo }) => {
                         <div className="container-menu-header item-center">
                             <ul className="list-menu-header item-center">
                                 <li className="item-menu-header">
-                                    <a onClick={() => onRedirectByPathname(PATH_NAME.BINANCE)}>
+                                    <a className={"" + (checkActiveMenu(PATH_NAME.BINANCE) ? " active" : "")} onClick={() => onRedirectByPathname(PATH_NAME.BINANCE)}>
                                         BINANCE
                                     </a>
                                 </li>
                                 <li className="item-menu-header">
-                                    <a onClick={() => onRedirectByPathname(PATH_NAME.MEXC)}>
+                                    <a className={"" + (checkActiveMenu(PATH_NAME.MEXC) ? " active" : "")} onClick={() => onRedirectByPathname(PATH_NAME.MEXC)}>
                                         MEXC
                                     </a>
                                 </li>

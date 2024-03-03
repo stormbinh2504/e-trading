@@ -103,8 +103,6 @@ class CommonUtils {
             ToastUtil.success('Copy success', text);
         }
     }
-
-
 }
 
 export default CommonUtils;

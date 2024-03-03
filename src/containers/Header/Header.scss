@@ -41,10 +41,13 @@
                         padding: 14px 16px;
 
                         a {
+                            &.active {
+                                color: $primary_1;
+                            }
+
                             font-weight: 500;
                             font-size  : 16px;
                             line-height: 24px;
-                            color      : $primary_1;
                         }
                     }
                 }
