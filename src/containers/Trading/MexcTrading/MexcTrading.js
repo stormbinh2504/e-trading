@@ -50,6 +50,14 @@ const columns = [
         key: 'symbol',
         width: 150,
         align: 'center',
+        onCell: (record) => {
+            return {
+                onClick: () => {
+                    const convertedSymbol = record.symbol.replace("USDT", "");
+                    CommonUtils.onCopyText(convertedSymbol)
+                }
+            };
+        }
     },
 
     {
@@ -325,6 +333,7 @@ const MexcTrading = ({ userInfo }) => {
         await firebaseMethods.setDataToFirebase(email, "listSymbols", data)
             .then(res => {
                 ToastUtil.success("Lưu danh sách mã đã chọn thành công");
+                setSymboslWatched(selectedRowSymbols)
             })
             .catch(error => {
                 ToastUtil.errorApi(error, "Lưu danh sách mã đã chọn không thành công");
@@ -371,10 +380,24 @@ const MexcTrading = ({ userInfo }) => {
                                 fetchInfoSymbol()
                             }
                         }>Call Data </button>
-                        <button className="btn btn-add" onClick={addSymbols}>Luu symbol </button>
-                        <button className="btn btn-add" onClick={getSymbols}>Lay symbol </button>
-                        <button className="btn btn-add" onClick={clearAllSymbols}>Clear All symbol </button>
+                        <button className="btn btn-add" onClick={addSymbols}>Save symbol</button>
+                        <button className="btn btn-add" onClick={getSymbols}>Get symbol</button>
+                        <button className="btn btn-add" onClick={clearAllSymbols}>Clear All symbol</button>
                     </div>
+                    {symbolsWatched && symbolsWatched.length > 0 &&
+                        <div className="container-action style-add">
+                            <span>List symbol saved:</span>
+                            <span>
+                                {symbolsWatched.map((item, index) => {
+                                    return (
+                                        <span>
+                                            {item},
+                                        </span>
+                                    )
+                                })}
+                            </span>
+                        </div>
+                    }
                     <div className="table-all-broker">
                         <Table
                             rowSelection={{

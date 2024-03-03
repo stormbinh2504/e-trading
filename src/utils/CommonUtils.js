@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { push } from "connected-react-router";
 import { reduxStore, dispatch } from "../../src/redux/store"
+import ToastUtil from "./ToastUtil";
 class CommonUtils {
 
     static checkLogined() {
@@ -92,6 +93,18 @@ class CommonUtils {
 
         return _class
     }
+
+    static onCopyText = (text) => {
+        if (window.isSecureContext && navigator.clipboard) {
+            navigator.clipboard.writeText(text);
+            ToastUtil.success('Copy success', text);
+        } else {
+            this.unsecuredCopyToClipboard(text);
+            ToastUtil.success('Copy success', text);
+        }
+    }
+
+
 }
 
 export default CommonUtils;
