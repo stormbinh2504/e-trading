@@ -17,7 +17,7 @@ import axios from 'axios';
 import { firebaseMethods } from '../../../firebase/firebaseMethods';
 // const listSymbol = ["ZENUSDT", "SUIUSDT"]
 const { Column, ColumnGroup, } = Table;
-
+// https://mexcdevelop.github.io/apidocs/spot_v3_en/#get-etf-info
 
 // var a = 2; // Giá trị ngày hôm nay
 // var b = 1; // Giá trị ngày hôm trước
@@ -59,7 +59,16 @@ const columns = [
             };
         }
     },
-
+    {
+        title: 'Giá hiện tại',
+        dataIndex: 'price',
+        key: 'price',
+        width: 150,
+        align: 'center',
+        className: 'bg-day-3',
+        sorter: (a, b) => a.price - b.price,
+        render: (text) => <span className={""}>{text}</span>,
+    },
     {
         title: '% KLTB 3 ngày',
         dataIndex: 'percentAverageVolume3Days',
@@ -85,7 +94,7 @@ const columns = [
         title: '% KL thay đổi 2 phiên gần nhất',
         dataIndex: 'percentChangeVolumnLastDay',
         key: 'percentChangeVolumnLastDay',
-        width: 160,
+        width: 120,
         align: 'center',
         className: 'bg-day-3',
         sorter: (a, b) => a.percentChangeVolumnLastDay - b.percentChangeVolumnLastDay,
